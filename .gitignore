@@ -1,0 +1,101 @@
+###############################
+# .NET / ASP.NET Core
+###############################
+bin/
+obj/
+out/
+wwwroot/lib/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+project.lock.json
+artifacts/
+*.vspscc
+
+# Build logs and caches
+*.log
+*.tlog
+*.cache
+*.db
+*.bak
+*.tmp
+
+###############################
+# Docker
+###############################
+# Ignore local build output but keep Dockerfile
+docker-compose.override.yml
+docker-compose.*.yml
+.env
+*.pid
+*.seed
+*.tar
+*.gz
+*.zip
+
+###############################
+# IDEs and editors
+###############################
+# Visual Studio / VS for Mac
+.vs/
+.vscode/
+.idea/
+*.code-workspace
+
+# JetBrains Rider
+.idea/
+*.iml
+
+# Mac / Windows system files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+###############################
+# User secrets / environment
+###############################
+# Do not commit personal or dev-only secrets
+**/secrets.json
+*.env.local
+*.development.env
+UserSecrets/
+appsettings.Development.json
+
+###############################
+# Test & tooling artifacts
+###############################
+TestResults/
+*.coverage
+*.coveragexml
+*.trx
+*.nupkg
+*.snupkg
+
+###############################
+# Node (if Swagger UI customization uses npm)
+###############################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+###############################
+# OS and editor cruft
+###############################
+*.swp
+*.swo
+*.orig
+*.tmp
+*~
+
+###############################
+# Optional: allow config files checked in
+###############################
+!.editorconfig
+!.gitignore
+!Dockerfile
+!docker-compose.yml
+!appsettings.json
