@@ -1,0 +1,217 @@
+{
+  "Acura": {
+    "TLX": { "seats": 5 },
+    "RDX": { "seats": 5 },
+    "MDX": { "seats": 7 }
+  },
+  "Alfa Romeo": {
+    "Stelvio": { "seats": 5 },
+    "Tonale": { "seats": 5 }
+  },
+  "Audi": {
+    "A4": { "seats": 5 },
+    "A6": { "seats": 5 },
+    "Q3": { "seats": 5 },
+    "Q5": { "seats": 5 },
+    "Q7": { "seats": 7 },
+    "Q8": { "seats": 5 }
+  },
+  "BMW": {
+    "3 Series": { "seats": 5 },
+    "5 Series": { "seats": 5 },
+    "X3": { "seats": 5 },
+    "X5": { "seats": 7 },
+    "X7": { "seats": 7 },
+    "iX": { "seats": 5 }
+  },
+  "Buick": {
+    "Encore GX": { "seats": 5 },
+    "Envision": { "seats": 5 },
+    "Enclave": { "seats": 7 }
+  },
+  "Cadillac": {
+    "XT4": { "seats": 5 },
+    "XT5": { "seats": 5 },
+    "XT6": { "seats": 7 },
+    "Escalade": { "seats": 7 },
+    "LYRIQ": { "seats": 5 }
+  },
+  "Chevrolet": {
+    "Malibu": { "seats": 5 },
+    "Trailblazer": { "seats": 5 },
+    "Equinox": { "seats": 5 },
+    "Blazer": { "seats": 5 },
+    "Traverse": { "seats": 7 },
+    "Tahoe": { "seats": 7 },
+    "Suburban": { "seats": 8 },
+    "Silverado": { "seats": 6 }
+  },
+  "Chrysler": {
+    "Pacifica": { "seats": 7 },
+    "Voyager": { "seats": 7 }
+  },
+  "Dodge": {
+    "Durango": { "seats": 7 },
+    "Hornet": { "seats": 5 }
+  },
+  "Ford": {
+    "Escape": { "seats": 5 },
+    "Edge": { "seats": 5 },
+    "Bronco": { "seats": 5 },
+    "Bronco Sport": { "seats": 5 },
+    "Explorer": { "seats": 7 },
+    "Expedition": { "seats": 8 },
+    "F-150": { "seats": 6 },
+    "Maverick": { "seats": 5 }
+  },
+  "GMC": {
+    "Terrain": { "seats": 5 },
+    "Acadia": { "seats": 7 },
+    "Yukon": { "seats": 8 },
+    "Sierra 1500": { "seats": 6 },
+    "Canyon": { "seats": 5 }
+  },
+  "Genesis": {
+    "GV60": { "seats": 5 },
+    "GV70": { "seats": 5 },
+    "GV80": { "seats": 7 }
+  },
+  "Honda": {
+    "Civic": { "seats": 5 },
+    "Accord": { "seats": 5 },
+    "HR-V": { "seats": 5 },
+    "CR-V": { "seats": 5 },
+    "Passport": { "seats": 5 },
+    "Pilot": { "seats": 8 },
+    "Ridgeline": { "seats": 5 }
+  },
+  "Hyundai": {
+    "Elantra": { "seats": 5 },
+    "Sonata": { "seats": 5 },
+    "Tucson": { "seats": 5 },
+    "Santa Fe": { "seats": 5 },
+    "Palisade": { "seats": 8 },
+    "Ioniq 5": { "seats": 5 }
+  },
+  "Infiniti": {
+    "QX50": { "seats": 5 },
+    "QX55": { "seats": 5 },
+    "QX60": { "seats": 7 },
+    "QX80": { "seats": 7 }
+  },
+  "Jeep": {
+    "Compass": { "seats": 5 },
+    "Cherokee": { "seats": 5 },
+    "Grand Cherokee": { "seats": 5 },
+    "Wrangler": { "seats": 5 },
+    "Gladiator": { "seats": 5 },
+    "Wagoneer": { "seats": 8 }
+  },
+  "Kia": {
+    "Forte": { "seats": 5 },
+    "Seltos": { "seats": 5 },
+    "Sportage": { "seats": 5 },
+    "Sorento": { "seats": 7 },
+    "Telluride": { "seats": 8 },
+    "EV6": { "seats": 5 }
+  },
+  "Land Rover": {
+    "Range Rover Evoque": { "seats": 5 },
+    "Range Rover Velar": { "seats": 5 },
+    "Range Rover Sport": { "seats": 7 },
+    "Defender": { "seats": 7 },
+    "Discovery": { "seats": 7 }
+  },
+  "Lexus": {
+    "ES": { "seats": 5 },
+    "NX": { "seats": 5 },
+    "RX": { "seats": 5 },
+    "GX": { "seats": 7 },
+    "LX": { "seats": 8 }
+  },
+  "Lincoln": {
+    "Corsair": { "seats": 5 },
+    "Nautilus": { "seats": 5 },
+    "Aviator": { "seats": 7 },
+    "Navigator": { "seats": 8 }
+  },
+  "Mazda": {
+    "Mazda3": { "seats": 5 },
+    "CX-30": { "seats": 5 },
+    "CX-5": { "seats": 5 },
+    "CX-50": { "seats": 5 },
+    "CX-9": { "seats": 7 }
+  },
+  "Mercedes-Benz": {
+    "C-Class": { "seats": 5 },
+    "E-Class": { "seats": 5 },
+    "GLB": { "seats": 7 },
+    "GLC": { "seats": 5 },
+    "GLE": { "seats": 5 },
+    "GLS": { "seats": 7 }
+  },
+  "Mitsubishi": {
+    "Outlander": { "seats": 7 },
+    "Outlander PHEV": { "seats": 7 },
+    "Eclipse Cross": { "seats": 5 }
+  },
+  "Nissan": {
+    "Sentra": { "seats": 5 },
+    "Altima": { "seats": 5 },
+    "Maxima": { "seats": 5 },
+    "Rogue": { "seats": 5 },
+    "Murano": { "seats": 5 },
+    "Pathfinder": { "seats": 7 },
+    "Armada": { "seats": 8 },
+    "Frontier": { "seats": 5 }
+  },
+  "Polestar": {
+    "3": { "seats": 5 }
+  },
+  "RAM": {
+    "1500": { "seats": 6 },
+    "2500": { "seats": 6 },
+    "ProMaster": { "seats": 8 }
+  },
+  "Subaru": {
+    "Impreza": { "seats": 5 },
+    "Legacy": { "seats": 5 },
+    "Crosstrek": { "seats": 5 },
+    "Outback": { "seats": 5 },
+    "Forester": { "seats": 5 },
+    "Ascent": { "seats": 7 }
+  },
+  "Tesla": {
+    "Model 3": { "seats": 5 },
+    "Model Y": { "seats": 5 },
+    "Model X": { "seats": 7 }
+  },
+  "Toyota": {
+    "Camry": { "seats": 5 },
+    "Prius": { "seats": 5 },
+    "RAV4": { "seats": 5 },
+    "Highlander": { "seats": 7 },
+    "4Runner": { "seats": 7 },
+    "Tacoma": { "seats": 5 },
+    "Tundra": { "seats": 6 },
+    "Sienna": { "seats": 8 },
+    "Sequoia": { "seats": 8 },
+    "bZ4X": { "seats": 5 }
+  },
+  "Volkswagen": {
+    "Jetta": { "seats": 5 },
+    "Taos": { "seats": 5 },
+    "Tiguan": { "seats": 7 },
+    "Atlas": { "seats": 8 },
+    "Atlas Cross Sport": { "seats": 5 },
+    "ID.4": { "seats": 5 }
+  },
+  "Volvo": {
+    "S60": { "seats": 5 },
+    "S90": { "seats": 5 },
+    "XC40": { "seats": 5 },
+    "XC60": { "seats": 5 },
+    "XC90": { "seats": 7 },
+    "EX90": { "seats": 7 }
+  }
+}
