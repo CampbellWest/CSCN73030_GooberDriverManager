@@ -33,7 +33,7 @@ public class DriverFinder
         return (distance);
     }
 
-    private static double ToRadians(double degrees)
+    public static double ToRadians(double degrees)
     {
         return degrees * Math.PI / 180;
     }
