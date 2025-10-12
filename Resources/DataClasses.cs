@@ -6,97 +6,115 @@ public class CarInformation
 {
     [JsonPropertyName("seats")]
     public int seats { get; set; }
+
+    [JsonPropertyName("isPetFriendly")]
+    public bool IsPetFriendly { get; set; }
+
+    [JsonPropertyName("carType")] public string CarType { get; set; } = "";
+
 }
 
 public class ConfirmDriverRequest
 {
-    [JsonPropertyName("rideId")]    
+    [JsonPropertyName("rideId")]
     public int RideId { get; set; }
-    
-    [JsonPropertyName("driverAssigned")]    
+
+    [JsonPropertyName("driverAssigned")]
     public bool DriverAssigned { get; set; }
-    
-    [JsonPropertyName("driverId")]    
+
+    [JsonPropertyName("driverId")]
     public int DriverId { get; set; }
 
-    [JsonPropertyName("driverName")] 
+    [JsonPropertyName("driverName")]
     public string DriverName { get; set; } = "";
 
-    [JsonPropertyName("carInformation")] 
+    [JsonPropertyName("carInformation")]
     public string CarInfo { get; set; } = "";
-    
-    [JsonPropertyName("licensePlate")] 
+
+    [JsonPropertyName("licensePlate")]
     public string LicensePlate { get; set; } = "";
 
     [JsonPropertyName("currentLocation")]
     public LocationData CurrentLocation { get; set; } = default!;
+
+    //Availability of driver
+    [JsonPropertyName("isAvailable")]
+    public bool IsAvailable { get; set; } = true;
+
 }
 
 public class RideRequest
 {
-    [JsonPropertyName("rideId")]    
+    [JsonPropertyName("rideId")]
     public int RideId { get; set; }
-    
+
     [JsonPropertyName("clientId")]
     public int ClientId { get; set; }
 
-    [JsonPropertyName("timeStamp")] 
+    [JsonPropertyName("timeStamp")]
     public string TimeStamp { get; set; } = "";
-    
+
     [JsonPropertyName("pickup")]
     public LocationData PickupLocation { get; set; } = default!;
-    
+
     [JsonPropertyName("dropOff")]
     public LocationData DropOffLocation { get; set; } = default!;
-    
+
     [JsonPropertyName("routeInformation")]
     public RouteInformation RouteInformation { get; set; } = default!;
-    
+
     [JsonPropertyName("rideInformation")]
     public RideInformation RideInformation { get; set; } = default!;
-    
+
     [JsonPropertyName("paymentInformation")]
     public PaymentInformation PaymentInformation { get; set; } = default!;
+
 }
 
 public class LocationData
 {
-    [JsonPropertyName("latitude")]    
+    [JsonPropertyName("latitude")]
     public double Latitude { get; set; }
-    
-    [JsonPropertyName("longitude")]    
+
+    [JsonPropertyName("longitude")]
     public double Longitude { get; set; }
 
-    [JsonPropertyName("address")] 
+    [JsonPropertyName("address")]
     public string Address { get; set; } = "";
 }
 
 public class RouteInformation
 {
-    [JsonPropertyName("distance")]    
+    [JsonPropertyName("distance")]
     public double Distance { get; set; }
-    
-    [JsonPropertyName("duration")]    
+
+    [JsonPropertyName("duration")]
     public double Duration { get; set; }
 }
 
 public class RideInformation
 {
-    [JsonPropertyName("carType")] 
+    [JsonPropertyName("carType")]
     public string CarType { get; set; } = "";
-    
-    [JsonPropertyName("petFriendly")]    
-    public bool PetFriendly { get; set; } 
+
+    [JsonPropertyName("petFriendly")]
+    public bool PetFriendly { get; set; }
+}
+
+public class RideResponse
+{
+    public int RideId { get; set; }
+    public RideInformation RideInformation { get; set; } = default!;
 }
 
 public class PaymentInformation
 {
-    [JsonPropertyName("currency")] 
-    public string Curreny { get; set; } = "";
-    
-    [JsonPropertyName("amount")]    
+    [JsonPropertyName("currency")]
+    public string Currency { get; set; } = "";
+
+    [JsonPropertyName("amount")]
     public double Amount { get; set; }
-    
-    [JsonPropertyName("paymentStatus")]    
+
+    [JsonPropertyName("paymentStatus")]
     public bool PaymentStatus { get; set; }
 }

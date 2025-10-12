@@ -3,10 +3,10 @@ namespace Generators;
 public static class NameGenerator
 {
     private static readonly Random rand = new Random();
-    
+
     private static readonly string directoryPath =
         Path.Combine(Directory.GetCurrentDirectory(), "Resources");
-    
+
     private static readonly List<string> firstNames = LoadNames("FirstNames.txt");
     private static readonly List<string> lastNames = LoadNames("LastNames.txt");
 
@@ -16,7 +16,7 @@ public static class NameGenerator
         names.RemoveAll(string.IsNullOrWhiteSpace);
         return names;
     }
-    
+
     public static string GenerateName()
     {
         if (firstNames.Count == 0 || lastNames.Count == 0)
@@ -24,7 +24,7 @@ public static class NameGenerator
 
         string firstName = firstNames[rand.Next(firstNames.Count)];
         string lastName = lastNames[rand.Next(lastNames.Count)];
-        
+
         return $"{firstName} {lastName}";
     }
 }
