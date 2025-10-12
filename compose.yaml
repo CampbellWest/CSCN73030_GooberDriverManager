@@ -1,0 +1,9 @@
+﻿services:
+  drivermanagement:
+    build: .
+    image: drivermanagement:latest # builds latest driver management image
+    ports:
+      - "7500:8080" # maps host 7500 to container 8080 port
+    environment:
+      ASPNETCORE_URLS: "http://+:8080" # tells Kestrel to listen on port 8080 on all network interfaces
+      ASPNETCORE_ENVIRONMENT: "Development"  # set environment to development (can change to prod) 
