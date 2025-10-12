@@ -6,6 +6,12 @@ public class CarInformation
 {
     [JsonPropertyName("seats")]
     public int seats { get; set; }
+    
+    [JsonPropertyName("isPetFriendly")]
+    public bool IsPetFriendly { get; set; }
+
+    [JsonPropertyName("carType")] public string CarType { get; set; } = "";
+
 }
 
 public class ConfirmDriverRequest
