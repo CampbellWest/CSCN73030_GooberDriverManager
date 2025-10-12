@@ -7,6 +7,7 @@ using System.Text.Json;
 using Generators;
 using DemoApi.Resources;
 using DriverManagement;
+using Microsoft.Win32.SafeHandles;
 
 namespace DemoApi.Controllers;
 
@@ -122,36 +123,51 @@ public class DriverManagerController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetRideInfo(int rideId)
+    [HttpGet("GetRideInfo")]
+    public async Task<IActionResult> GetRideInfo(int driverId)
     {
         using var httpClient = new HttpClient();
 
-        //I will replace with actual api url once I figure out from database team what it is
-        string dbApiUrl = $".../api/rides/getRideInfo?rideId={rideId}";
+        //Supabase endpoint for the Vehicles table
+        string dbApiUrl = $"https://flpjmceqykalfwktysgi.supabase.co/rest/v1/Vehicles?driver_id=eq.{driverId}";
 
-        var response = await httpClient.GetAsync(dbApiUrl);
+        //public api key for authentication
+        string apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZscGptY2VxeWthbGZ3a3R5c2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMDEwMTMsImV4cCI6MjA3NDY3NzAxM30.X1rlQZeSvbrO0KE1LZdsrLvNS8YlpTborYoXG4JGsWI";
 
-        if (!response.IsSuccessStatusCode)
+        // includes the apikey in the request header
+        httpClient.DefaultRequestHeaders.Add("apikey", apiKey);
+        httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+
+        try
         {
-            return StatusCode((int)response.StatusCode, "Error fetching ride details.");
+            var response = await httpClient.GetAsync(dbApiUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return StatusCode((int)response.StatusCode, $"Database API returned {response.StatusCode}");
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            //Supabase returns a json structure
+            var vehicles = JsonSerializer.Deserialize<List<RideInformation>>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (vehicles == null || !vehicles.Any())
+            {
+                return NotFound($"No vehicle found for driver ID {driverId}");
+            }
+
+            // returns filtered RideInformation
+            return Ok(vehicles.First());
         }
-
-        //response body as json
-        var jsonResponse = await response.Content.ReadAsStringAsync();
-
-        //deserialize json to RideResponse object
-        var rideResponse = JsonSerializer.Deserialize<RideResponse>(jsonResponse, new JsonSerializerOptions
+        catch (HttpRequestException ex)
         {
-            //incase of unmatching names
-            PropertyNameCaseInsensitive = true
-        });
-
-        if (rideResponse == null)
-        {
-            return NotFound("Ride details not found.");
+            return StatusCode(500, $"Error contacting database API: {ex.Message}");
         }
-
-        return Ok(rideResponse);
     }
+
 
 }
