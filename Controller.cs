@@ -56,7 +56,7 @@ public class DriverManagerController : ControllerBase
         await AddTripDetails.AddTripAsync(
             id: rideRequest.RideId,
             driverId: ConfirmRequest.DriverId,
-            riderId: rideRequest.RiderId,
+            ClientId: rideRequest.ClientId,
             startLocation: "108 University Ave E, Waterloo", // fake data for now
             endLocation: "220 King St N, Waterloo",         //fake data for now
             timeStarted: DateTime.UtcNow,

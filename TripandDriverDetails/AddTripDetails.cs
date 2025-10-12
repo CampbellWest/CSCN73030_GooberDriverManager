@@ -23,7 +23,7 @@ namespace DriverManagement
         }
 
         // Add trip details to the database
-        public static async Task AddTripAsync(int id, int driverId, int riderId, string startLocation, string endLocation, DateTime timeStarted, DateTime timeCompleted, string status)
+        public static async Task AddTripAsync(int id, int driverId, int ClientId, string startLocation, string endLocation, DateTime timeStarted, DateTime timeCompleted, string status)
         {
             using var client = CreateClient();
 
@@ -31,7 +31,7 @@ namespace DriverManagement
             {
                 id = id,
                 driver_id = driverId,
-                rider_id = riderId,
+                rider_id = ClientId,
                 start_location = startLocation,
                 end_location = endLocation,
                 time_started = timeStarted.ToString("yyyy-MM-ddTHH:mm:ss"),
