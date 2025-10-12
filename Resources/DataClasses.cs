@@ -6,7 +6,7 @@ public class CarInformation
 {
     [JsonPropertyName("seats")]
     public int seats { get; set; }
-    
+
     [JsonPropertyName("isPetFriendly")]
     public bool IsPetFriendly { get; set; }
 
@@ -110,7 +110,7 @@ public class RideResponse
 public class PaymentInformation
 {
     [JsonPropertyName("currency")]
-    public string Curreny { get; set; } = "";
+    public string Currency { get; set; } = "";
 
     [JsonPropertyName("amount")]
     public double Amount { get; set; }
