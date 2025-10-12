@@ -25,4 +25,4 @@ jobs:
     - name: Build
       run: dotnet build CSCN73030_GooberDriverManager.sln --no-restore --configuration Release
     - name: Test
-      run: dotnet test GooberDriverTests/GooberDriverTests.csproj --no-build --verbosity normal
+      run: dotnet test GooberDriverTests/GooberDriverTests.csproj --verbosity normal
