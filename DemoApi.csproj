@@ -10,6 +10,23 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
+    <PackageReference Include="xunit" Version="2.9.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="GooberDriverTest\obj\GooberDriverTest.csproj.nuget.dgspec.json" />
+    <_ContentIncludedByDefault Remove="GooberDriverTest\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="GooberDriverTest\obj\project.packagespec.json" />
+    <_ContentIncludedByDefault Remove="GooberDriverTests\obj\GooberDriverTests.csproj.nuget.dgspec.json" />
+    <_ContentIncludedByDefault Remove="GooberDriverTests\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="GooberDriverTests\obj\project.packagespec.json" />
+  </ItemGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    </PropertyGroup>
   
 </Project>
