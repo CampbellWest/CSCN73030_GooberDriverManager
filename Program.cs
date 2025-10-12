@@ -7,7 +7,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // home page return 200
-app.MapGet("/", () => Results.Text("DriverManagement API is running"));
+app.MapGet("/", () => Results.Text("DriverManagement API is running. Go to /swagger for UI"));
 
 // Swagger in all environments
 app.UseSwagger();
