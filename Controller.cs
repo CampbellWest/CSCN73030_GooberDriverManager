@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text.Json;
 using Generators;
 using DemoApi.Resources;
+using DriverManagement;
 
 namespace DemoApi.Controllers;
 
@@ -31,7 +32,7 @@ public class DriverManagerController : ControllerBase
 
     // POST api/DriverManager/RequestDriver
     [HttpPost]
-    public IActionResult RequestDriver(RideRequest rideRequest)
+    public async Task<IActionResult> RequestDriver(RideRequest rideRequest)
     {
         var ConfirmRequest = new ConfirmDriverRequest
         {
@@ -69,7 +70,7 @@ public class DriverManagerController : ControllerBase
 
     // POST api/DriverManager/DriveComplete
     [HttpPost]
-    public IActionResult DriveComplete(int rideId)
+    public async Task<IActionResult> DriveComplete(int rideId)
     {
 
         // Find the database entry with the matching rideId 
