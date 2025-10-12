@@ -127,3 +127,13 @@ This endpoint provides details of the driver and vehicle once the ride has been 
   }
 }
 ```
+
+## Docker
+### Build docker image with docker [username]/[image name]
+```docker build -t <username>/drivermanagement .```
+
+### Push docker image to account [username]/[image name]
+```docker push <username>/drivermanagement```
+
+### Compose docker locally
+```docker compose up --build```
