@@ -18,8 +18,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DemoApi.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\DemoApi.csproj" />
+    </ItemGroup>
 
 </Project>
