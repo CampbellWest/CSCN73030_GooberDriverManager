@@ -17,7 +17,7 @@ public class DriverManagerController : ControllerBase
     private static List<ConfirmDriverRequest> RegisteredDrivers = new();
 
     [HttpGet]
-    public IActionResult TestAPI()
+    public IActionResult GenerateaMoreDriversTest()
     {
         if (RegisteredDrivers.Count < 100)
         {
