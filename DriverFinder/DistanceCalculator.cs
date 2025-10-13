@@ -41,13 +41,15 @@ public class DriverFinder
     // filter drivers who do not match ride request details
     public static List<ConfirmDriverRequest> FilterDrivers(RideRequest rideRequest, List<ConfirmDriverRequest> driverList)
     {
-        bool isPetFriendly = rideRequest.RideInformation.PetFriendly;
+        bool isUserBriningPet = rideRequest.RideInformation.PetFriendly;
         string carType = rideRequest.RideInformation.CarType;
         var validDrivers = new List<ConfirmDriverRequest>();
         
         foreach (var driver in driverList)
         {
-            if (driver.CarInfo.CarType == carType && driver.CarInfo.IsPetFriendly == isPetFriendly)
+            // check that car type (reg or xl) matches request, and either car is pet friendly or no pet is coming
+            if (driver.CarInfo.CarType == carType && 
+                (driver.CarInfo.IsPetFriendly == isUserBriningPet || !isUserBriningPet))
             {
                 validDrivers.Add(driver);
             }
@@ -75,6 +77,9 @@ public class DriverFinder
             }
         }
 
+        if (closestDriver == null)
+            throw new Exception("No drivers available");
+        
         return closestDriver;
     }
 }
