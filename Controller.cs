@@ -122,8 +122,8 @@ public class DriverManagerController : ControllerBase
         return Ok($"Driver with ID {driverId} availability updated to {isAvailable}.");
     }
 
+    // GET api/DriverManager/GetRideInfo?driverId=123
     [HttpGet]
-    [HttpGet("GetRideInfo")]
     public async Task<IActionResult> GetRideInfo(int driverId)
     {
         using var httpClient = new HttpClient();
