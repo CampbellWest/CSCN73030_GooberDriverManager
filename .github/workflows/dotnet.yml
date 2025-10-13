@@ -24,10 +24,8 @@ jobs:
       run: dotnet restore CSCN73030_GooberDriverManager.sln
     - name: Build
       run: dotnet build CSCN73030_GooberDriverManager.sln --no-restore --configuration Release
-    - name: Publish
-      run: dotnet publish CSCN73030_GooberDriverManager.sln --configuration Release
     - name: Run tests
-      run: dotnet test CSCN73030_GooberDriverManager.sln --no-build --configuration Release --logger trx
+      run: dotnet test ./GooberDriverTests/GooberDriverTests.csproj --no-build --configuration Release --logger trx
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v4
