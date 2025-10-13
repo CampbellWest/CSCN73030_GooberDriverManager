@@ -10,7 +10,8 @@ public class CarInformation
     [JsonPropertyName("isPetFriendly")]
     public bool IsPetFriendly { get; set; }
 
-    [JsonPropertyName("carType")] public string CarType { get; set; } = "";
+    [JsonPropertyName("carType")] 
+    public string CarType { get; set; } = "";
 
 }
 
@@ -29,7 +30,10 @@ public class ConfirmDriverRequest
     public string DriverName { get; set; } = "";
 
     [JsonPropertyName("carInformation")]
-    public string CarInfo { get; set; } = "";
+    public CarInformation CarInfo { get; set; } = default!;
+    
+    [JsonPropertyName("carDescription")]
+    public string CarDescription { get; set; } = "";
 
     [JsonPropertyName("licensePlate")]
     public string LicensePlate { get; set; } = "";

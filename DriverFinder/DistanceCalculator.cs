@@ -39,7 +39,7 @@ public class DriverFinder
     }
 
     // filter drivers who do not match ride request details
-    private static ConfirmDriverRequest[] FilterDrivers(RideRequest rideRequest, ConfirmDriverRequest[] driverList)
+    public static List<ConfirmDriverRequest> FilterDrivers(RideRequest rideRequest, List<ConfirmDriverRequest> driverList)
     {
         bool isPetFriendly = rideRequest.RideInformation.PetFriendly;
         string carType = rideRequest.RideInformation.CarType;
@@ -47,36 +47,18 @@ public class DriverFinder
         
         foreach (var driver in driverList)
         {
-            
-            if (string.IsNullOrEmpty(driver.CarInfo)) continue;
-
-            // Deserialize the CarInfo JSON string into a CarInformation object
-            CarInformation? carInfo;
-            try
-            {
-                carInfo = JsonSerializer.Deserialize<CarInformation>(driver.CarInfo);
-            }
-            catch
-            {
-                continue; // skip driver if carInfo is invalid
-            }
-
-            if (carInfo == null) continue;
-
-            if (carInfo.IsPetFriendly == isPetFriendly && carInfo.CarType == carType)
+            if (driver.CarInfo.CarType == carType && driver.CarInfo.IsPetFriendly == isPetFriendly)
             {
                 validDrivers.Add(driver);
             }
         }
 
-        return validDrivers.ToArray();
+        return validDrivers;
     }
-    private static ConfirmDriverRequest FindClosestDriver(ConfirmDriverRequest[] driverList, LocationData pickupLocation)
+    public static ConfirmDriverRequest FindClosestDriver(List<ConfirmDriverRequest> driverList, LocationData pickupLocation)
     {
-        
         double shortestDriverDistance = 0;
         ConfirmDriverRequest? closestDriver = null;
-
         
         //loop through array, calculate driver distance from 
         foreach (var driver in driverList)
@@ -90,12 +72,10 @@ public class DriverFinder
             {
                 shortestDriverDistance =  currentDriverDistance;
                 closestDriver = driver;
-                
             }
         }
 
         return closestDriver;
     }
-    
 }
 

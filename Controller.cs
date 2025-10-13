@@ -7,6 +7,7 @@ using System.Text.Json;
 using Generators;
 using DemoApi.Resources;
 using DriverManagement;
+using DriverFinder;
 using Microsoft.Win32.SafeHandles;
 
 namespace DemoApi.Controllers;
@@ -18,7 +19,7 @@ public class DriverManagerController : ControllerBase
     private static List<ConfirmDriverRequest> RegisteredDrivers = new();
 
     [HttpGet]
-    public IActionResult GenerateaMoreDriversTest()
+    public IActionResult GenerateMoreDriversTest()
     {
         if (RegisteredDrivers.Count < 100)
         {
@@ -28,45 +29,65 @@ public class DriverManagerController : ControllerBase
             }
         }
 
-        return Ok(RegisteredDrivers.Count);
+        return Ok($"Drivers Generated. There are {RegisteredDrivers.Count} drivers.");
+    }
+
+    private void GenerateDriversByTenUpToOneHundred()
+    {
+        if (RegisteredDrivers.Count < 100)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                RegisteredDrivers.Add(DriverGenerator.GenerateDriver());
+            }
+        }
     }
 
     // POST api/DriverManager/RequestDriver
     [HttpPost]
     public async Task<IActionResult> RequestDriver(RideRequest rideRequest)
     {
-        var ConfirmRequest = new ConfirmDriverRequest
+        try
         {
-            RideId = rideRequest.RideId,
-            DriverAssigned = true,
-            DriverId = 123,
-            DriverName = "John Driver",
-            CarInfo = "Red 2017 Honda Civic",
-            LicensePlate = "ABCD 123",
-            CurrentLocation = new LocationData
+            GenerateDriversByTenUpToOneHundred();
+
+            var bestDriver = new ConfirmDriverRequest();
+            
+            while (true)
             {
-                Latitude = 60.123,
-                Longitude = -70.123
+                var filteredDrivers = DriverFinder.DriverFinder.FilterDrivers(rideRequest, RegisteredDrivers);
+
+                bestDriver = DriverFinder.DriverFinder.FindClosestDriver(filteredDrivers, rideRequest.PickupLocation);
+
+                if (bestDriver == null)
+                    GenerateDriversByTenUpToOneHundred();
+                else
+                    break;
             }
-        };
+            
 
-        // calling AddTripDetails.AddTripAsync
-        // Pass in all required parameters from the ride request and assigned driver.
-        // This will send the trip info to the database once writes are enabled.
+            // calling AddTripDetails.AddTripAsync
+            // Pass in all required parameters from the ride request and assigned driver.
+            // This will send the trip info to the database once writes are enabled.
 
-        await AddTripDetails.AddTripAsync(
-            id: rideRequest.RideId,
-            driverId: ConfirmRequest.DriverId,
-            ClientId: rideRequest.ClientId,
-            startLocation: "108 University Ave E, Waterloo", // fake data for now
-            endLocation: "220 King St N, Waterloo",         //fake data for now
-            timeStarted: DateTime.UtcNow,
-            timeCompleted: DateTime.UtcNow.AddMinutes(30),
-            status: "Completed"
-        );
+            await AddTripDetails.AddTripAsync(
+                id: rideRequest.RideId,
+                driverId: 123,
+                ClientId: rideRequest.ClientId,
+                startLocation: "108 University Ave E, Waterloo", // fake data for now
+                endLocation: "220 King St N, Waterloo",         //fake data for now
+                timeStarted: DateTime.UtcNow,
+                timeCompleted: DateTime.UtcNow.AddMinutes(30),
+                status: "Completed"
+            );
 
 
-        return Ok(ConfirmRequest);
+            return Ok(bestDriver);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     // POST api/DriverManager/DriveComplete
@@ -168,6 +189,4 @@ public class DriverManagerController : ControllerBase
             return StatusCode(500, $"Error contacting database API: {ex.Message}");
         }
     }
-
-
 }
