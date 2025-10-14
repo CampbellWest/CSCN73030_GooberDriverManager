@@ -17,7 +17,7 @@ namespace DemoApi.Controllers;
 public class DriverManagerController : ControllerBase
 {
     private static List<ConfirmDriverRequest> RegisteredDrivers = new();
-
+    
     [HttpGet]
     public IActionResult GenerateMoreDriversTest()
     {
@@ -29,7 +29,7 @@ public class DriverManagerController : ControllerBase
             }
         }
 
-        return Ok($"Drivers Generated. There are {RegisteredDrivers.Count} drivers.");
+        return Ok(RegisteredDrivers);
     }
 
     private void GenerateDriversByTenUpToOneHundred()
@@ -189,4 +189,17 @@ public class DriverManagerController : ControllerBase
             return StatusCode(500, $"Error contacting database API: {ex.Message}");
         }
     }
+
+    [HttpGet]
+    public IActionResult ClearDriversTEST(string password)
+    {
+        if (password == "123")
+        {
+            RegisteredDrivers.Clear();
+            return Ok();
+        }
+
+        return Ok();
+    }
+    
 }
