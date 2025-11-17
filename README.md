@@ -94,7 +94,7 @@ Creates a new ride request in the system.
   - `petFriendly` (boolean) — Whether pets are allowed.  
 
 
-**Example**
+**Input (JSON Body)**
 
 ```json
 {
@@ -122,6 +122,29 @@ Creates a new ride request in the system.
 }
 ```
 
+**Output (JSON Body)**
+
+```json
+{
+  "driverId": 123,
+  "driverName": "John Doe",
+  "rating": 4.8,
+  "isAvailable": false,
+  "carInfo": {
+    "make": "Toyota",
+    "model": "Camry",
+    "color": "Silver",
+    "plateNumber": "ABCD-123",
+    "carType": "XL",
+    "isPetFriendly": true
+  },
+  "currentLocation": {
+    "latitude": 43.4735,
+    "longitude": -80.5390
+  }
+}
+```
+
 ### Complete a Ride
 
 Marks a ride as completed and finalizes the trip.  
@@ -139,7 +162,7 @@ This endpoint provides details of the driver and vehicle once the ride has been 
   - `longitude` (float) — Longitude coordinate.  
   - `address` (string) — Street address of the final location.  
 
-**Example**
+**Input (JSON Body)**
 
 ```json
 {
@@ -152,6 +175,111 @@ This endpoint provides details of the driver and vehicle once the ride has been 
   }
 }
 ```
+
+**Output Text**
+`Drive With Ride Id: 123 Is Complete. Driver is Available Again.`
+
+### Get Available Drivers
+
+**Endpoint:**  
+`GET http://10.172.55.21:7500/api/DriverManager/GetAvailableDrivers`
+
+**Output (JSON Body)**
+
+```json
+[
+  {
+    "driverId": 1,
+    "driverName": "Lebron James",
+    "isAvailable": true,
+    "carInfo": { "carType": "Sedan", "isPetFriendly": false },
+    "currentLocation": { "latitude": 43.4723, "longitude": -80.5449 }
+  },
+  {
+    "driverId": 2,
+    "driverName": "Ash Ketchum",
+    "isAvailable": true,
+    "carInfo": { "carType": "XL", "isPetFriendly": true },
+    "currentLocation": { "latitude": 43.4643, "longitude": -80.5204 }
+  }
+]
+```
+
+### Update Driver Availability
+
+**Endpoint:**  
+`PUT http://10.172.55.21:7500/api/DriverManager/UpdateDriverAvailability`
+
+**Variables**
+- `driverId` (integer) — Identifier for the driver.  
+- `isAvailable` (boolean) — Is driver available?  
+
+**Input (JSON Body)**
+
+```json
+{
+  "driverId": 30,
+  "isAvailable": false
+}
+```
+
+### Get Ride Information
+
+**Endpoint:**  
+`GET http://10.172.55.21:7500/api/GetRideInfo?driverId=123`
+
+**Query Parameters**
+- `driverId` (integer) — Identifier for the driver must be provided in the URL.
+
+**Output (JSON Body)**
+
+```json
+{
+  "driver_id": 123,
+  "make": "Toyota",
+  "model": "Supra",
+  "year": 2025,
+  "color": "Blue",
+  "license_plate": "GWBR-999",
+  "seat_capacity": 4,
+  "is_pet_friendly": false,
+  "created_at": "2024-01-01T12:00:00Z"
+}
+```
+
+### Generate Test Drivers
+
+**Endpoint:**  
+`GET http://10.172.55.21:7500/api/GenerateMoreDriversTest`
+
+**Output (JSON Body)**
+
+```json
+[
+  {
+    "driverId": 1,
+    "driverName": "Lebron James",
+    "isAvailable": true,
+    "carInfo": { "carType": "Sedan", "isPetFriendly": false },
+    "currentLocation": { "latitude": 43.4723, "longitude": -80.5449 }
+  },
+  {
+    "driverId": 2,
+    "driverName": "Ash Ketchum",
+    "isAvailable": true,
+    "carInfo": { "carType": "XL", "isPetFriendly": true },
+    "currentLocation": { "latitude": 43.4643, "longitude": -80.5204 }
+  }
+]
+```
+
+### Clean Drivers
+
+**Endpoint:**  
+`GET http://10.172.55.21:7500/api/ClearDriversTEST`
+
+**Output**
+`200 OK`
 
 ## Docker
 ### Build docker image with docker [username]/[image name]
