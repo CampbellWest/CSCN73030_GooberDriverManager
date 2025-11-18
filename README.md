@@ -27,10 +27,13 @@ A fleet management system that dispatches drivers, allowing users to request a r
   - [Clean Drivers](#clean-drivers)
 - [Docker](#docker)
 - [Testing](#testing)
-  - [Unit Tests](#unit-tests)
   - [How to Run Tests](#how-to-run-tests)
-  - [Test Coverage](#test-coverage)
-  - [Test Results](#test-results)
+  - [Unit Tests](#unit-tests)
+    - [Unit Test Coverage](#unit-test-coverage)
+    - [Unit Test Results](#unit-test-results)
+  - [Integration Tests](#integration-tests)
+    - [Integration Test Coverage](#integration-test-coverage)
+    - [Integration Test Results](#integration-test-results)
   
 ## Overview
 This module handles all driver-related operations in the system, including driver registration, ride assignment, trip completion, and retrieval of ride details. It interacts with the Database team (Supabase backend) using REST API endpoints to store and retrieve driver and trip data. This module ensures smooth communication between the ride request system and the backend database, managing driver availability and assignments dynamically.
@@ -302,17 +305,17 @@ This endpoint provides details of the driver and vehicle once the ride has been 
 ```docker compose up --build```
 
 ## Testing
-### Unit Tests
-We used the **xUnit** test suite for all unit tests.
-
 ### How to Run Tests
 To execute the unit tests, run the following command in the root directory:
+
+### Unit Tests
+We used the **xUnit** test suite for all unit tests.
 
 ```bash
 dotnet test
 ```
 
-### Test Coverage
+#### Unit Test Coverage
 The unit tests are located in the `GooberDriverTests` directory and cover the following:
 
 | Component | Functionality Tested | Test Cases |
@@ -322,5 +325,16 @@ The unit tests are located in the `GooberDriverTests` directory and cover the fo
 | **Driver Filtering** | Ensures drivers are correctly filtered out based on the user's request criteria. | • Matching Car Type (Regular vs XL)<br>• Pet Friendly boolean requirements<br>• Empty driver lists<br>• Multiple valid matches |
 | **Driver Selection** | Ensures the system picks the mathematically closest driver to the pickup point. | • Single driver availability<br>• Multiple drivers (choosing shortest distance)<br>• Exception handling (No drivers available)<br>• Exact location matches |
 
-### Test Results
+#### Unit Test Results
 <img width="1259" height="738" alt="image" src="https://github.com/user-attachments/assets/0e59d415-6992-451f-99a6-157258c9acaf" />
+
+### Integration Tests
+The integration tests are located in `GooberDriverIntegrationTests` directory and cover the following:
+
+#### Integration Test Coverage
+| Component | Constraint Verified | Test Cases |
+| :--- | :--- | :--- |
+| **Driver Registration** | Verifies data integrity and schema constraints when adding new drivers to Supabase. | • **Success:** Valid inputs & Special characters (UTF-8)<br>• **Constraint:** Rejects duplicate license numbers<br>• **Validation:** Rejects ratings > 5 or < 0<br>• **Sanity:** Rejects negative license numbers |
+| **Trip Logging** | Verifies constraints when logging trip history. | • **Validation:** Rejects missing start locations (null checks)<br>• **Integrity:** Rejects trips for non-existent drivers (Foreign Key check)<br>• **Logic:** Rejects trips where EndTime is before StartTime |
+
+#### Integration Test Results
