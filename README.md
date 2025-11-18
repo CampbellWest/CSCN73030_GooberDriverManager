@@ -335,7 +335,7 @@ The integration tests are located in `GooberDriverIntegrationTests` directory an
 | Component | Constraint Verified | Test Cases |
 | :--- | :--- | :--- |
 | **Driver Registration** | Verifies data integrity and schema constraints when adding new drivers to Supabase. | • **Success:** Valid inputs & Special characters (UTF-8)<br>• **Success:** Adds driver with valid data (AddDriver_ShouldCreateDriver)<br>• **Constraint:** Ensures license number uniqueness<br>• **Sanity:** Rejects negative license numbers |
-| **Trip Logging** | Verifies constraints when logging trip history. | • **Success:** Creates trip with valid driver<br>• **Failure:**Trip rejected if driver does not exist (AddTrip_ShouldFail_WhenDriverDoesNotExist)<br>• **Failure:** Prevents same trip being assigned to multiple drivers (AddTrip_ShouldFail_WhenSameTripAssignedToMultipleDrivers)<br>• **Logic:** Updates trip status (TripStatus_ShouldUpdateToCompleted),(TripStatus_ShouldUpdateFromCompletedToBooked),(TripStatus_ShouldUpdateFromBookedToInProgress) |
+| **Trip Logging** | Verifies constraints when logging trip history. | • **Success:** Creates trip with valid driver<br>• **Failure:**Trip rejected if driver does not exist (AddTrip_ShouldFail_WhenDriverDoesNotExist)<br>•  **Failure:** Prevents same trip being assigned to multiple drivers (AddTrip_ShouldFail_WhenSameTripAssignedToMultipleDrivers)<br>• **Logic:** Updates trip status (TripStatus_ShouldUpdateToCompleted),(TripStatus_ShouldUpdateFromCompletedToBooked),(TripStatus_ShouldUpdateFromBookedToInProgress) |
 
 #### Integration Test Results
 <img width="1462" height="622" alt="image" src="https://github.com/user-attachments/assets/48a6e1ee-1931-427f-b16e-d75c0d57b073" />
