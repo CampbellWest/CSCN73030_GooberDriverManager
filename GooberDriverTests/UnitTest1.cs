@@ -430,4 +430,218 @@ public class DriverFinderTests
     }
     
     #endregion
+    
+    
+}
+public class DriverFinderIntegrationTests
+{
+    [Fact]
+    public void CompleteWorkflow_HappyPath_FindsClosestMatchingDriver()
+    {
+        // arrange
+        var rideRequest = new RideRequest
+        {
+            RideId = 1,
+            ClientId = 100,
+            TimeStamp = DateTime.Now.ToString(),
+            PickupLocation = new LocationData 
+            { 
+                Latitude = 43.4755, 
+                Longitude = -80.5265,
+                Address = "108 University Ave E, Waterloo, ON N2J 2W2"
+            },
+            DropOffLocation = new LocationData 
+            { 
+                Latitude = 43.4643, 
+                Longitude = -80.5204,
+                Address = "75 King St S, Waterloo, ON"
+            },
+            RideInformation = new RideInformation
+            {
+                CarType = "regular",
+                PetFriendly = false
+            }
+        };
+        
+        // fake drivers in waterloo
+        var availableDrivers = new List<ConfirmDriverRequest>
+        {
+            new()
+            {
+                DriverId = 1,
+                DriverName = "Sarah Wilson",
+                CarInfo = new CarInformation { CarType = "regular", IsPetFriendly = false, seats = 4 },
+                CurrentLocation = new LocationData 
+                { 
+                    Latitude = 43.4800, 
+                    Longitude = -80.5300,
+                    Address = "Near U of W"
+                }, // About 500m from pickup
+                IsAvailable = true,
+                LicensePlate = "ABCD123",
+                CarDescription = "Honda Civic - Blue"
+            },
+            new()
+            {
+                DriverId = 2,
+                DriverName = "Mike Chen",
+                CarInfo = new CarInformation { CarType = "xl", IsPetFriendly = true, seats = 7 },
+                CurrentLocation = new LocationData 
+                { 
+                    Latitude = 43.4756, 
+                    Longitude = -80.5266,
+                    Address = "close to conestoga"
+                },
+                IsAvailable = true,
+                LicensePlate = "XYZ789",
+                CarDescription = "Toyota Highlander - Black"
+            },
+            // this one
+            new()
+            {
+                DriverId = 3,
+                DriverName = "Emma Johnson",
+                CarInfo = new CarInformation { CarType = "regular", IsPetFriendly = true, seats = 4 },
+                CurrentLocation = new LocationData 
+                { 
+                    Latitude = 43.4757, 
+                    Longitude = -80.5267,
+                    Address = "conestoga parking lot"
+                }, 
+                IsAvailable = true,
+                LicensePlate = "DEF456",
+                CarDescription = "Mazda 3 - Red"
+            },
+            new()
+            {
+                DriverId = 4,
+                DriverName = "David Brown",
+                CarInfo = new CarInformation { CarType = "regular", IsPetFriendly = false, seats = 4 },
+                CurrentLocation = new LocationData 
+                { 
+                    Latitude = 43.4500, 
+                    Longitude = -80.5000,
+                    Address = "kitchener"
+                }, // Far away
+                IsAvailable = true,
+                LicensePlate = "GHI789",
+                CarDescription = "Toyota Corolla - White"
+            }
+        };
+        
+        // Act - Complete workflow: Filter then find closest
+        var filteredDrivers = DriverFinder.DriverFinder.FilterDrivers(rideRequest, availableDrivers);
+        var assignedDriver = DriverFinder.DriverFinder.FindClosestDriver(filteredDrivers, rideRequest.PickupLocation);
+        
+        // assert - verify correct driver
+        Assert.NotNull(assignedDriver);
+        Assert.Equal(3, assignedDriver.DriverId);
+        Assert.Equal("Emma Johnson", assignedDriver.DriverName);
+        Assert.Equal("regular", assignedDriver.CarInfo.CarType);
+        Assert.Equal("Mazda 3 - Red", assignedDriver.CarDescription);
+        
+        // check only regular cars were filteresd
+        Assert.Equal(3, filteredDrivers.Count);
+        Assert.All(filteredDrivers, driver => Assert.Equal("regular", driver.CarInfo.CarType));
+        
+        // chefck that driver is  very close to pickup
+        double distanceToPickup = DriverFinder.DriverFinder.CalculateDistance(
+            assignedDriver.CurrentLocation.Latitude,
+            assignedDriver.CurrentLocation.Longitude,
+            rideRequest.PickupLocation.Latitude,
+            rideRequest.PickupLocation.Longitude
+        );
+        Assert.InRange(distanceToPickup, 0, 100); 
+    }
+    
+     [Fact]
+    public void CompleteWorkflow_SadPath_NoMatchingDriversAvailable_ThrowsException()
+    {
+        // arrange - needs xl with pet
+        var rideRequest = new RideRequest
+        {
+            RideId = 2,
+            ClientId = 101,
+            TimeStamp = DateTime.Now.ToString(),
+            PickupLocation = new LocationData 
+            { 
+                Latitude = 43.4755, 
+                Longitude = -80.5265,
+                Address = "108 University Ave E, Waterloo, ON N2J 2W2" 
+            },
+            DropOffLocation = new LocationData 
+            { 
+                Latitude = 43.4643, 
+                Longitude = -80.5204,
+                Address = "75 King St S, Waterloo, ON"
+            },
+            RideInformation = new RideInformation
+            {
+                CarType = "xl",
+                PetFriendly = true  
+            },
+        };
+        
+        // fake drivers, none work
+        var availableDrivers = new List<ConfirmDriverRequest>
+        {
+            new()
+            {
+                DriverId = 1,
+                DriverName = "Sarah Wilson",
+                CarInfo = new CarInformation { CarType = "regular", IsPetFriendly = true, seats = 4 },
+                CurrentLocation = new LocationData 
+                { 
+                    Latitude = 43.4756, 
+                    Longitude = -80.5266,
+                    Address = "At Conestoga College"
+                },
+                IsAvailable = true,
+                LicensePlate = "ABCD123",
+                CarDescription = "Honda Civic - Blue" 
+            },
+            new()
+            {
+                DriverId = 2,
+                DriverName = "Mike Chen",
+                CarInfo = new CarInformation { CarType = "xl", IsPetFriendly = false, seats = 7 },
+                CurrentLocation = new LocationData 
+                { 
+                    Latitude = 43.4757, 
+                    Longitude = -80.5267,
+                    Address = "At Conestoga College"
+                },
+                IsAvailable = true,
+                LicensePlate = "XYZ789",
+                CarDescription = "Toyota Highlander - Black" 
+            },
+            new()
+            {
+                DriverId = 3,
+                DriverName = "Emma Johnson",
+                CarInfo = new CarInformation { CarType = "regular", IsPetFriendly = false, seats = 4 },
+                CurrentLocation = new LocationData 
+                { 
+                    Latitude = 43.4758, 
+                    Longitude = -80.5268,
+                    Address = "Near Conestoga College"
+                },
+                IsAvailable = true,
+                LicensePlate = "DEF456",
+                CarDescription = "Mazda 3 - Red"
+            }
+        };
+        
+        // act - complete workflow then check for driver
+        var filteredDrivers = DriverFinder.DriverFinder.FilterDrivers(rideRequest, availableDrivers);
+        
+        // assert - no drivers
+        Assert.Empty(filteredDrivers);
+        
+        // should throw exception
+        var exception = Assert.Throws<Exception>(() => 
+            DriverFinder.DriverFinder.FindClosestDriver(filteredDrivers, rideRequest.PickupLocation));
+        
+        Assert.Equal("No drivers available", exception.Message);
+    }
 }
