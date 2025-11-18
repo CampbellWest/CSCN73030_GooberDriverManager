@@ -338,3 +338,5 @@ The integration tests are located in `GooberDriverIntegrationTests` directory an
 | **Trip Logging** | Verifies constraints when logging trip history. | • **Validation:** Rejects missing start locations (null checks)<br>• **Integrity:** Rejects trips for non-existent drivers (Foreign Key check)<br>• **Logic:** Rejects trips where EndTime is before StartTime |
 
 #### Integration Test Results
+<img width="1462" height="622" alt="image" src="https://github.com/user-attachments/assets/48a6e1ee-1931-427f-b16e-d75c0d57b073" />
+
