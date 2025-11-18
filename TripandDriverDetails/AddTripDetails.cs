@@ -46,10 +46,16 @@ namespace DriverManagement
             // Send POST request to Supabase
             var response = await client.PostAsync(tripEndpoint, content);
 
-            if (response.IsSuccessStatusCode)
-                Console.WriteLine($"Trip {id} added successfully.");
-            else
-                Console.WriteLine($"Failed to add trip: {await response.Content.ReadAsStringAsync()}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string errorMsg = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to add trip: {errorMsg}");
+            }
+            // if (response.IsSuccessStatusCode)
+            //     Console.WriteLine($"Trip {id} added successfully.");
+            // else
+            //     Console.WriteLine($"Failed to add trip: {await response.Content.ReadAsStringAsync()}");
         }
     }
 }

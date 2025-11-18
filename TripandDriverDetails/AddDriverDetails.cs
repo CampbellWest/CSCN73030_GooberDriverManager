@@ -43,10 +43,15 @@ namespace DriverManagement
             // Send POST request to Supabase
             var response = await client.PostAsync(driverEndpoint, content);
 
-            if (response.IsSuccessStatusCode)
-                Console.WriteLine($"Driver {accountId} added successfully.");
-            else
-                Console.WriteLine($"Failed to add driver: {await response.Content.ReadAsStringAsync()}");
+             if (!response.IsSuccessStatusCode)
+            {
+                string errorMsg = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to add driver: {errorMsg}");
+            }
+            // if (response.IsSuccessStatusCode)
+            //     Console.WriteLine($"Driver {accountId} added successfully.");
+            // else
+            //     Console.WriteLine($"Failed to add driver: {await response.Content.ReadAsStringAsync()}");
         }
     
     }
