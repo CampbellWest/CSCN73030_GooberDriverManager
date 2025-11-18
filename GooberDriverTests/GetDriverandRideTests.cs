@@ -10,7 +10,7 @@ namespace DemoApi.GooberDriverTests
 {
     public class GetDriverandRideTests
     {
-        // When there are no registered drivers, GetAvailableDrivers should return 404 NotFound.
+       
         [Fact]
         public void GetAvailableDrivers_NoDrivers_ReturnsNotFound()
         {
@@ -27,7 +27,7 @@ namespace DemoApi.GooberDriverTests
             Assert.Equal("No available drivers at the moment.", notFound.Value);
         }
 
-        // When some drivers exist and one is made unavailable, GetAvailableDriver returns only the available drivers.
+        
         [Fact]
         public void GetAvailableDrivers_ReturnsOnlyAvailableDrivers()
         {
@@ -62,7 +62,7 @@ namespace DemoApi.GooberDriverTests
             Assert.All(availableDrivers, d => Assert.True(d.IsAvailable));
         }
 
-        // UpdateDriverAvailability should return Ok and update the IsAvailable flag when the driver exists.
+        
        [Fact]
        public void UpdateDriverAvailability_ExistingDriver_UpdatesFlagAndReturnsOk()
        {
@@ -100,7 +100,7 @@ namespace DemoApi.GooberDriverTests
          }
 
 
-        // UpdateDriverAvailability should return NotFound when the driverId does not exist.
+        
         [Fact]
         public void UpdateDriverAvailability_NonExistingDriver_ReturnsNotFound()
         {
@@ -119,7 +119,7 @@ namespace DemoApi.GooberDriverTests
             Assert.Equal($"Driver with ID {bogusDriverId} not found.", message);
         }
 
-        // verify that JSON with carType and petFriendly maps correctly into RideInformation.
+        
         [Fact]
         public void RideInformation_JsonDeserialization_MapsCarTypeAndPetFriendly()
         {
@@ -149,6 +149,8 @@ namespace DemoApi.GooberDriverTests
             Assert.True(info.PetFriendly);
         }
 
+        /*
+        [Fact]
         public void GetAvailableDrivers_AllDriversUnavailable_ReturnsNotFound()
         {
             // Arrange
@@ -176,6 +178,7 @@ namespace DemoApi.GooberDriverTests
             var notFound = Assert.IsType<NotFoundObjectResult>(getResult);
             Assert.Equal("No available drivers at the moment.", notFound.Value);
         }
+        */
 
         [Fact]
         public void UpdateDriverAvailability_ToggleDriverBackToAvailable()
@@ -198,7 +201,7 @@ namespace DemoApi.GooberDriverTests
             var initialList = Assert.IsAssignableFrom<List<ConfirmDriverRequest>>(initialAvailable!.Value);
             int initialCount = initialList.Count;
 
-            // 1) Set target to unavailable
+            
             var setFalseResult = controller.UpdateDriverAvailability(target.DriverId, false);
             Assert.IsType<OkObjectResult>(setFalseResult);
 
@@ -212,15 +215,15 @@ namespace DemoApi.GooberDriverTests
                 }
                 else
                 {
-                    // If no drivers available, NotFound is also a valid outcome here
+                    
                     Assert.IsType<NotFoundObjectResult>(afterFalse);
                 }
 
-            // 2) Set target back to available
+            
             var setTrueResult = controller.UpdateDriverAvailability(target.DriverId, true);
             Assert.IsType<OkObjectResult>(setTrueResult);
 
-            // 3) Now GetAvailableDrivers should show at least one available driver again
+            
             var finalResult = controller.GetAvailableDrivers();
             if (finalResult is OkObjectResult okFinal)
             {
