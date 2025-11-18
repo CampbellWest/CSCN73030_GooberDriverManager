@@ -1,6 +1,6 @@
 ﻿services:
   drivermanagement:
-    build: .
+    container_name: drivermanagment
     image: drivermanagement:latest # builds latest driver management image
     ports:
       - "7500:8080" # maps host 7500 to container 8080 port
