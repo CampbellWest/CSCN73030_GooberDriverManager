@@ -8,12 +8,21 @@
 
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
+<<<<<<< HEAD
   <!-- Never reference test project folders -->
   <ItemGroup>
     <Compile Remove="GooberDriverTests\**\*.cs" />
     <Compile Remove="GooberDriverIntegrationTests\**\*.cs" />
+=======
+ 
+  <ItemGroup>
+    <Compile Remove="GooberDriverTests\**\*.cs" />
+    <EmbeddedResource Remove="GooberDriverTests\**\*" />
+    <None Remove="GooberDriverTests\**\*" />
+>>>>>>> 9b77b095058efeba69fc0ea8b08ad1d400195153
   </ItemGroup>
 
   <ItemGroup>

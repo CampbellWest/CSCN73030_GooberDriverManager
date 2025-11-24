@@ -23,8 +23,8 @@ public class ConfirmDriverRequest
     [JsonPropertyName("driverAssigned")]
     public bool DriverAssigned { get; set; }
 
-    [JsonPropertyName("driverId")]
-    public int DriverId { get; set; }
+    [JsonPropertyName("driverId")] 
+    public string DriverId { get; set; } = "";
 
     [JsonPropertyName("driverName")]
     public string DriverName { get; set; } = "";
@@ -70,8 +70,8 @@ public class RideRequest
     [JsonPropertyName("rideInformation")]
     public RideInformation RideInformation { get; set; } = default!;
 
-    [JsonPropertyName("paymentInformation")]
-    public PaymentInformation PaymentInformation { get; set; } = default!;
+    //[JsonPropertyName("paymentInformation")]
+    //public PaymentInformation PaymentInformation { get; set; } = default!;
 
 }
 
