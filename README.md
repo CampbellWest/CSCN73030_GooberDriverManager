@@ -90,8 +90,6 @@ Creates a new ride request in the system.
 **Attributes**
 
 - `ride_id` (integer) — Unique identifier for the ride.
-
-**From the RideID we will need the following data from the database**
 - `clientId` (integer) — Identifier for the client requesting the ride.  
 - `timestamp` (ISO 8601 string) — Time when the ride request was created.  
 - `pickup` (object) — Pickup location details.  
