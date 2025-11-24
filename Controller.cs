@@ -130,7 +130,7 @@ public class DriverManagerController : ControllerBase
 
     // PUT api/DriverManager/UpdateDriverAvailability
     [HttpPut]
-    public IActionResult UpdateDriverAvailability(int driverId, bool isAvailable)
+    public IActionResult UpdateDriverAvailability(string driverId, bool isAvailable)
     {
         // Finds the driver by ID
         var driver = RegisteredDrivers.FirstOrDefault(d => d.DriverId == driverId);
@@ -191,7 +191,7 @@ public class DriverManagerController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult ClearDriversTEST(string password)
+    public IActionResult ClearDriversTest(string password)
     {
         if (password == "123")
         {

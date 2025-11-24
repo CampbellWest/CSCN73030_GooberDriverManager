@@ -33,7 +33,9 @@ public static class DriverGenerator
             {
                 Latitude = Math.Round(latitude, 5),
                 Longitude = Math.Round(longitude, 5)
-            }
+            },
+            DriverId = Guid.NewGuid().ToString(),
+            
         };
 
         return carInfo;
