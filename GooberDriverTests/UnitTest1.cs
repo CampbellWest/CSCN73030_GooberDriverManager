@@ -468,7 +468,7 @@ public class DriverFinderIntegrationTests
         {
             new()
             {
-                DriverId = "1",
+                DriverId = 1,
                 DriverName = "Sarah Wilson",
                 CarInfo = new CarInformation { CarType = "regular", IsPetFriendly = false, seats = 4 },
                 CurrentLocation = new LocationData
@@ -483,7 +483,7 @@ public class DriverFinderIntegrationTests
             },
             new()
             {
-                DriverId = "2",
+                DriverId = 2,
                 DriverName = "Mike Chen",
                 CarInfo = new CarInformation { CarType = "xl", IsPetFriendly = true, seats = 7 },
                 CurrentLocation = new LocationData
@@ -499,7 +499,7 @@ public class DriverFinderIntegrationTests
             // this one
             new()
             {
-                DriverId = "3",
+                DriverId = 3,
                 DriverName = "Emma Johnson",
                 CarInfo = new CarInformation { CarType = "regular", IsPetFriendly = true, seats = 4 },
                 CurrentLocation = new LocationData
@@ -514,7 +514,7 @@ public class DriverFinderIntegrationTests
             },
             new()
             {
-                DriverId = "4",
+                DriverId = 4,
                 DriverName = "David Brown",
                 CarInfo = new CarInformation { CarType = "regular", IsPetFriendly = false, seats = 4 },
                 CurrentLocation = new LocationData
@@ -535,7 +535,7 @@ public class DriverFinderIntegrationTests
 
         // assert - verify correct driver
         Assert.NotNull(assignedDriver);
-        Assert.Equal("3", assignedDriver.DriverId);
+        Assert.Equal(3, assignedDriver.DriverId);
         Assert.Equal("Emma Johnson", assignedDriver.DriverName);
         Assert.Equal("regular", assignedDriver.CarInfo.CarType);
         Assert.Equal("Mazda 3 - Red", assignedDriver.CarDescription);
@@ -587,7 +587,7 @@ public class DriverFinderIntegrationTests
         {
             new()
             {
-                DriverId = "1",
+                DriverId = 1,
                 DriverName = "Sarah Wilson",
                 CarInfo = new CarInformation { CarType = "regular", IsPetFriendly = true, seats = 4 },
                 CurrentLocation = new LocationData
@@ -602,7 +602,7 @@ public class DriverFinderIntegrationTests
             },
             new()
             {
-                DriverId = "2",
+                DriverId = 2,
                 DriverName = "Mike Chen",
                 CarInfo = new CarInformation { CarType = "xl", IsPetFriendly = false, seats = 7 },
                 CurrentLocation = new LocationData
@@ -617,7 +617,7 @@ public class DriverFinderIntegrationTests
             },
             new()
             {
-                DriverId = "3",
+                DriverId = 3,
                 DriverName = "Emma Johnson",
                 CarInfo = new CarInformation { CarType = "regular", IsPetFriendly = false, seats = 4 },
                 CurrentLocation = new LocationData

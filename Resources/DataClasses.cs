@@ -24,7 +24,7 @@ public class ConfirmDriverRequest
     public bool DriverAssigned { get; set; }
 
     [JsonPropertyName("driverId")] 
-    public string DriverId { get; set; } = "";
+    public int DriverId { get; set; }
 
     [JsonPropertyName("driverName")]
     public string DriverName { get; set; } = "";

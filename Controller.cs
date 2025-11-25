@@ -130,7 +130,7 @@ public class DriverManagerController : ControllerBase
 
     // PUT api/DriverManager/UpdateDriverAvailability
     [HttpPut]
-    public IActionResult UpdateDriverAvailability(string driverId, bool isAvailable)
+    public IActionResult UpdateDriverAvailability(int driverId, bool isAvailable)
     {
         // Finds the driver by ID
         var driver = RegisteredDrivers.FirstOrDefault(d => d.DriverId == driverId);

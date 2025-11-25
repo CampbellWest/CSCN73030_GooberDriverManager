@@ -1,4 +1,5 @@
 using DemoApi.Resources;
+using System.Security.Cryptography;
 
 namespace Generators;
 
@@ -34,10 +35,25 @@ public static class DriverGenerator
                 Latitude = Math.Round(latitude, 5),
                 Longitude = Math.Round(longitude, 5)
             },
-            DriverId = Guid.NewGuid().ToString(),
+            DriverId = GenerateDriverId(),
             
         };
 
         return carInfo;
+    }
+
+    private static int GenerateDriverId()
+    {
+        byte[] randomBytes = new byte[4]; 
+        using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomBytes);
+        }
+        int secureId = BitConverter.ToInt32(randomBytes, 0);
+        if (secureId < 0)
+        {
+            secureId = -secureId;
+        }
+        return secureId;
     }
 }
