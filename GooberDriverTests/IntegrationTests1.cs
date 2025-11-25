@@ -11,6 +11,8 @@ using DemoApi;
 using DemoApi.Resources;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
+using DriverManagement;
+using DotNetEnv; 
 
 namespace DemoApi.GooberDriverTests
 {
@@ -137,21 +139,27 @@ namespace DemoApi.GooberDriverTests
 
     public class IntegrationTests
     {
-        private const string SupabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZscGptY2VxeWthbGZ3a3R5c2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMDEwMTMsImV4cCI6MjA3NDY3NzAxM30.X1rlQZeSvbrO0KE1LZdsrLvNS8YlpTborYoXG4JGsWI";
-        private const string DriverEndpoint = "https://flpjmceqykalfwktysgi.supabase.co/rest/v1/Driver";
-        private const string TripEndpoint = "https://flpjmceqykalfwktysgi.supabase.co/rest/v1/Trip";
+    private const string SupabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZscGptY2VxeWthbGZ3a3R5c2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMDEwMTMsImV4cCI6MjA3NDY3NzAxM30.X1rlQZeSvbrO0KE1LZdsrLvNS8YlpTborYoXG4JGsWI";
+    private const string DriverEndpoint = "https://flpjmceqykalfwktysgi.supabase.co/rest/v1/Driver";
+    private const string TripEndpoint = "https://flpjmceqykalfwktysgi.supabase.co/rest/v1/Trip";
 
-        private readonly HttpClient _client;
 
-        public IntegrationTests()
-        {
-            _client = new HttpClient();
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SupabaseApiKey);
-            _client.DefaultRequestHeaders.Add("apikey", SupabaseApiKey);
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _client.DefaultRequestHeaders.Add("Prefer", "return=representation");
 
-        }
+    private readonly HttpClient _client;
+
+    public IntegrationTests()
+    {
+        // Load .env when this class is instantiated
+        //DotNetEnv.Env.Load();
+
+        //SupabaseApiKey = Config.SupabaseApiKey;
+
+        _client = new HttpClient();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SupabaseApiKey);
+        _client.DefaultRequestHeaders.Add("apikey", SupabaseApiKey);
+        _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        _client.DefaultRequestHeaders.Add("Prefer", "return=representation");
+    }
 
         private StringContent JsonContent(object obj)
         {
@@ -258,7 +266,7 @@ namespace DemoApi.GooberDriverTests
                     rating = 5,
                     availability_status = "available",
                     license_number = licenseNumber,
-                    current_location = "Québec City 🌆"
+                    current_location = "Québec City@"
                 };
 
                 var response = await _client.PostAsync(DriverEndpoint, JsonContent(payload));
@@ -281,84 +289,25 @@ namespace DemoApi.GooberDriverTests
             }
         }
 
-        // [Fact]
-        // public async Task UpdateTripDriverId_ShouldUpdateSuccessfully()
-        // {
-        //     int tripId = 1; // existing trip already in DB
-        //     int newDriverId = new Random().Next(10000, 99999);
+        [Fact]
+        public async Task UpdateTripDriverId_ShouldUpdateSuccessfully()
+        {
+            int tripId = 2; // existing trip already in DB
+            int newDriverId = 3;
 
-        //     var updatePayload = new { driver_id = newDriverId };
+            var updatePayload = new { driver_id = newDriverId };
 
-        //     var response = await _client.PatchAsync(
-        //         $"{TripEndpoint}?id=eq.{tripId}",
-        //         JsonContent(updatePayload)
-        //     );
+            var response = await _client.PatchAsync(
+                $"{TripEndpoint}?id=eq.{tripId}",
+                JsonContent(updatePayload)
+            );
 
-        //     Assert.True(response.IsSuccessStatusCode, "DriverId update failed.");
+            Assert.True(response.IsSuccessStatusCode, "DriverId update failed.");
 
-        //     var tripData = await GetTripAsync(tripId);
-        //     Assert.Contains(newDriverId.ToString(), tripData);
+            var tripData = await GetTripAsync(tripId);
+            Assert.Contains(newDriverId.ToString(), tripData);
 
-        // }
-
-        // [Fact]
-        // public async Task UpdateTripDriverId_ShouldUpdateSuccessfully()
-        // {
-        //     // 1. Insert driver
-        //     int newDriverId = new Random().Next(10000, 99999);
-        //     int licenseNumber = new Random().Next(100000, 999999);
-
-        //     var driverPayload = new
-        //     {
-        //         id = newDriverId,
-        //         account_id = "142dc6ca-7d33-47ea-9b1d-53ac25c9b15f",
-        //         rating = 5,
-        //         availability_status = "available",
-        //         license_number = licenseNumber,
-        //         current_location = "TempLocation"
-        //     };
-
-        //     var driverResponse = await _client.PostAsync(DriverEndpoint, JsonContent(driverPayload));
-        //     driverResponse.EnsureSuccessStatusCode();
-
-        //     // 2. Insert trip
-        //     var tripPayload = new
-        //     {
-        //         rider_id = 1,
-        //         driver_id = (int?)null,
-        //         start_location = "Point A",
-        //         end_location = "Point B",
-        //         time_started = DateTime.UtcNow.ToString("o")
-        //     };
-
-        //     var tripResponse = await _client.PostAsync(TripEndpoint, JsonContent(tripPayload));
-        //     tripResponse.EnsureSuccessStatusCode();
-
-        //     var insertedTripJson = await tripResponse.Content.ReadAsStringAsync();
-        //     var insertedTrip = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(insertedTripJson);
-        //     int tripId = ((JsonElement)insertedTrip![0]["id"]).GetInt32();
-
-        //     // 3. Update trip using Supabase client
-        //     var updateResult = await supabase
-        //         .From<Trip>()
-        //         .Where(x => x.id == tripId)
-        //         .Set(x => x.driver_id, newDriverId)
-        //         .Update();
-
-        //     Console.WriteLine("Update result: " + JsonSerializer.Serialize(updateResult));
-
-        //     // 4. Verify update
-        //     var updatedTrip = updateResult.FirstOrDefault();
-        //     Assert.NotNull(updatedTrip);
-        //     Assert.Equal(newDriverId, updatedTrip.driver_id);
-
-        //     // 5. Cleanup
-        //     await DeleteDriverAsync(newDriverId);
-        //     await DeleteTripAsync(tripId);
-        // }
-
-
-
+        }
 
        [Fact]
         public async Task UpdateDriverId_ShouldFail_WhenTripDoesNotExist()
@@ -379,8 +328,6 @@ namespace DemoApi.GooberDriverTests
 
             // If trip does not exist, the returned array will be empty: "[]"
             Assert.Equal("[]", verifyContent.Trim().ToString());
-
-
 
 
             // Ensure the update did NOT crash or silently succeed on a nonexistent trip.
