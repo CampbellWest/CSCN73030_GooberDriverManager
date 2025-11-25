@@ -20,7 +20,7 @@ namespace DriverManagement
         }
 
         
-        public static async Task UpdateDriverIdAsync(int tripId, string driverId)
+        public static async Task UpdateDriverIdAsync(int tripId, int driverId)
         {
             using var client = CreateClient();
 

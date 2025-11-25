@@ -93,7 +93,7 @@ public class DriverManagerController : ControllerBase
 
         // calling AddDriverDetails.AddDriverAsync
         //using fake data  
-        string driverId = Guid.NewGuid().ToString();    
+        int driverId = new Random().Next(10000, 99999);
         await DriverManagement.AddDriverDetails.AddDriverAsync(
             id: driverId,
             accountId: "160ca31",
