@@ -23,7 +23,7 @@ namespace DriverManagement
         }
 
         // Add driver details to the database
-        public static async Task AddDriverAsync(int id, string accountId, int rating, string availability, int licenseNumber, string? currentLocation)
+        public static async Task AddDriverAsync(string id, string accountId, int rating, string availability, int licenseNumber, string? currentLocation)
         {
             using var client = CreateClient();
 

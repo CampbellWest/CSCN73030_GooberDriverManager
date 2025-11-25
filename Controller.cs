@@ -65,21 +65,12 @@ public class DriverManagerController : ControllerBase
                     break;
             }
             
-
-            // calling AddTripDetails.AddTripAsync
-            // Pass in all required parameters from the ride request and assigned driver.
-            // This will send the trip info to the database once writes are enabled.
-
-            await AddTripDetails.AddTripAsync(
-                id: rideRequest.RideId,
-                driverId: 123,
-                ClientId: rideRequest.ClientId,
-                startLocation: "108 University Ave E, Waterloo", // fake data for now
-                endLocation: "220 King St N, Waterloo",         //fake data for now
-                timeStarted: DateTime.UtcNow,
-                timeCompleted: DateTime.UtcNow.AddMinutes(30),
-                status: "Completed"
-            );
+                // UPDATE driver_id of the existing trip
+                await UpdateDriverIdForTrip.UpdateDriverIdAsync(
+                    tripId: rideRequest.RideId,
+                    driverId: bestDriver.DriverId
+                );
+           
 
 
             return Ok(bestDriver);
@@ -101,9 +92,10 @@ public class DriverManagerController : ControllerBase
         // then send this driver to the database 
 
         // calling AddDriverDetails.AddDriverAsync
-        //using fake data      
-        await AddDriverDetails.AddDriverAsync(
-            id: 123,
+        //using fake data  
+        string driverId = Guid.NewGuid().ToString();    
+        await DriverManagement.AddDriverDetails.AddDriverAsync(
+            id: driverId,
             accountId: "160ca31",
             rating: 5,
             availability: "available",
@@ -191,7 +183,7 @@ public class DriverManagerController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult ClearDriversTest(string password)
+    public IActionResult ClearDriversTEST(string password)
     {
         if (password == "123")
         {

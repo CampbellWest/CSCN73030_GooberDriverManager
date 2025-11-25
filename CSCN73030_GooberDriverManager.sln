@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApi", "DemoApi.csproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GooberDriverTests", "GooberDriverTests\GooberDriverTests.csproj", "{0FACC72F-B544-40DB-BE2C-AB6E5E924B2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GooberDriverIntegrationTests", "GooberDriverIntegrationTests\GooberDriverIntegrationTests.csproj", "{FAF1F2D8-8908-41BB-AF48-4EE739EFAF87}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
