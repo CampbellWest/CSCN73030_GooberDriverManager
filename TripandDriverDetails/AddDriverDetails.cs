@@ -9,10 +9,8 @@ namespace DriverManagement
 {
     public static class AddDriverDetails
     {
-        // Supabase endpoint for Driver table
-        private static readonly string driverEndpoint = "https://flpjmceqykalfwktysgi.supabase.co/rest/v1/Driver";
-        // Supabase public API key, since database team is using supabase, we need this key to get authentication to access the database.
-        private static readonly string apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZscGptY2VxeWthbGZ3a3R5c2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMDEwMTMsImV4cCI6MjA3NDY3NzAxM30.X1rlQZeSvbrO0KE1LZdsrLvNS8YlpTborYoXG4JGsWI"; //public api key for authentication
+        private static readonly string driverEndpoint = Config.DriverEndpoint;
+        private static readonly string apiKey = Config.SupabaseApiKey;
 
          private static HttpClient CreateClient()
         {

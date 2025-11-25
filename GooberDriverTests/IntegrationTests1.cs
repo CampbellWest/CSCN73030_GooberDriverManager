@@ -12,6 +12,8 @@ using DemoApi;
 using DemoApi.Resources;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
+using DriverManagement;
+using DotNetEnv; 
 
 namespace DemoApi.GooberDriverTests
 {
@@ -94,7 +96,7 @@ namespace DemoApi.GooberDriverTests
         private const string DriverEndpoint = "https://flpjmceqykalfwktysgi.supabase.co/rest/v1/Driver";
         private const string TripEndpoint = "https://flpjmceqykalfwktysgi.supabase.co/rest/v1/Trip";
 
-        private readonly HttpClient _client;
+    private readonly HttpClient _client;
 
         public IntegrationTests()
         {
@@ -196,7 +198,7 @@ namespace DemoApi.GooberDriverTests
                     rating = 5,
                     availability_status = "available",
                     license_number = licenseNumber,
-                    current_location = "Québec City 🌆"
+                    current_location = "Québec City@"
                 };
 
                 var response = await _client.PostAsync(DriverEndpoint, JsonContent(payload));
