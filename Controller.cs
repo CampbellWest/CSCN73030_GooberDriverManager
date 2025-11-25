@@ -16,6 +16,8 @@ namespace DemoApi.Controllers;
 [Route("api/[controller]/[action]")]
 public class DriverManagerController : ControllerBase
 {
+    private const string SupabaseBaseUrl = "https://flpjmceqykalfwktysgi.supabase.co/rest/v1";
+    private const string SupabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZscGptY2VxeWthbGZ3a3R5c2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMDEwMTMsImV4cCI6MjA3NDY3NzAxM30.X1rlQZeSvbrO0KE1LZdsrLvNS8YlpTborYoXG4JGsWI";
     private static List<ConfirmDriverRequest> RegisteredDrivers = new();
     
     [HttpGet]
@@ -42,36 +44,150 @@ public class DriverManagerController : ControllerBase
             }
         }
     }
+    private async Task<RideRequest?> BuildRideRequestFromTripAsync(int tripId)
+    {
+        using var httpClient = new HttpClient();
+
+        httpClient.DefaultRequestHeaders.Add("apikey", SupabaseApiKey);
+        httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {SupabaseApiKey}");
+
+        // filters by id
+        string url = $"{SupabaseBaseUrl}/Trip?id=eq.{tripId}";
+
+        var response = await httpClient.GetAsync(url);
+        var rawBody = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            // Log full response body in the error so tests can see what went wrong
+            throw new InvalidOperationException(
+                $"Database API returned {response.StatusCode}: {rawBody}"
+            );
+        }
+
+        using var doc = JsonDocument.Parse(rawBody);
+        var root = doc.RootElement;
+
+        if (root.ValueKind != JsonValueKind.Array || root.GetArrayLength() == 0)
+        {
+            // No trip with that id
+            return null;
+        }
+
+        var trip = root[0];
+
+        double GetDoubleOrDefault(string name)
+        {
+            return trip.TryGetProperty(name, out var el) && el.ValueKind != JsonValueKind.Null
+                ? el.GetDouble()
+                : 0.0;
+        }
+
+        bool GetBoolOrDefault(string name)
+        {
+            return trip.TryGetProperty(name, out var el) && el.ValueKind == JsonValueKind.True;
+        }
+
+        string GetStringOrEmpty(string name)
+        {
+            return trip.TryGetProperty(name, out var el) && el.ValueKind != JsonValueKind.Null
+                ? (el.GetString() ?? string.Empty)
+                : string.Empty;
+        }
+
+        int GetIntOrDefault(string name)
+        {
+            return trip.TryGetProperty(name, out var el) && el.ValueKind != JsonValueKind.Null
+                ? el.GetInt32()
+                : 0;
+        }
+
+        // Builds the RideRequest from trip table data
+        var rideRequest = new RideRequest
+        {
+            RideId = trip.GetProperty("id").GetInt32(),
+            ClientId = GetIntOrDefault("rider_id"),
+
+            PickupLocation = new LocationData
+            {
+                Latitude = GetDoubleOrDefault("start_latitude"),
+                Longitude = GetDoubleOrDefault("start_longitude"),
+                Address = GetStringOrEmpty("start_location")
+            },
+
+            DropOffLocation = new LocationData
+            {
+                Address = GetStringOrEmpty("end_location")
+            },
+
+            RideInformation = new RideInformation
+            {
+                PetFriendly = GetBoolOrDefault("petFriendly"),
+                CarType = GetStringOrEmpty("carType")
+            }
+            
+        };
+
+        return rideRequest;
+    }
+
 
     // POST api/DriverManager/RequestDriver
     [HttpPost]
-    public async Task<IActionResult> RequestDriver(RideRequest rideRequest)
+    public async Task<IActionResult> RequestDriver(TripIdRequest tripRequest)
     {
+        if (tripRequest == null)
+            return BadRequest("Trip request body is required.");
+
+        RideRequest? rideRequest;
+
+        try
+        {
+            rideRequest = await BuildRideRequestFromTripAsync(tripRequest.TripId);
+        }
+        catch (InvalidOperationException ex)
+        {
+            // responds with a non-success status code
+            return StatusCode(500, ex.Message);
+        }
+        catch (HttpRequestException ex)
+        {
+            // error contacting Supabase
+            return StatusCode(500, $"Error contacting database API: {ex.Message}");
+        }
+
+        if (rideRequest == null)
+        {
+            return NotFound($"Trip with ID {tripRequest.TripId} not found.");
+        }
+
         try
         {
             GenerateDriversByTenUpToOneHundred();
 
-            var bestDriver = new ConfirmDriverRequest();
-            
+            ConfirmDriverRequest? bestDriver = null;
+
             while (true)
             {
                 var filteredDrivers = DriverFinder.DriverFinder.FilterDrivers(rideRequest, RegisteredDrivers);
-
                 bestDriver = DriverFinder.DriverFinder.FindClosestDriver(filteredDrivers, rideRequest.PickupLocation);
 
                 if (bestDriver == null)
+                {
+                    // No suitable driver found yet, generate more
                     GenerateDriversByTenUpToOneHundred();
+                }
                 else
+                {
                     break;
+                }
             }
-            
-                // UPDATE driver_id of the existing trip
-                await UpdateDriverIdForTrip.UpdateDriverIdAsync(
-                    tripId: rideRequest.RideId,
-                    driverId: bestDriver.DriverId
-                );
-           
 
+            // UPDATE driver_id of the existing trip
+            await UpdateDriverIdForTrip.UpdateDriverIdAsync(
+                tripId: rideRequest.RideId,
+                driverId: bestDriver.DriverId
+            );
 
             return Ok(bestDriver);
         }
@@ -80,6 +196,7 @@ public class DriverManagerController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
 
     // POST api/DriverManager/DriveComplete
     [HttpPost]
@@ -133,53 +250,6 @@ public class DriverManagerController : ControllerBase
         driver.IsAvailable = isAvailable;
 
         return Ok($"Driver with ID {driverId} availability updated to {isAvailable}.");
-    }
-
-    // GET api/DriverManager/GetRideInfo?driverId=123
-    [HttpGet]
-    public async Task<IActionResult> GetRideInfo(int driverId)
-    {
-        using var httpClient = new HttpClient();
-
-        //Supabase endpoint for the Vehicles table
-        string dbApiUrl = $"https://flpjmceqykalfwktysgi.supabase.co/rest/v1/Vehicles?driver_id=eq.{driverId}";
-
-        //public api key for authentication
-        string apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZscGptY2VxeWthbGZ3a3R5c2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMDEwMTMsImV4cCI6MjA3NDY3NzAxM30.X1rlQZeSvbrO0KE1LZdsrLvNS8YlpTborYoXG4JGsWI";
-
-        // includes the apikey in the request header
-        httpClient.DefaultRequestHeaders.Add("apikey", apiKey);
-        httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-
-        try
-        {
-            var response = await httpClient.GetAsync(dbApiUrl);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return StatusCode((int)response.StatusCode, $"Database API returned {response.StatusCode}");
-            }
-
-            var json = await response.Content.ReadAsStringAsync();
-
-            //Supabase returns a json structure
-            var vehicles = JsonSerializer.Deserialize<List<RideInformation>>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-
-            if (vehicles == null || !vehicles.Any())
-            {
-                return NotFound($"No vehicle found for driver ID {driverId}");
-            }
-
-            // returns filtered RideInformation
-            return Ok(vehicles.First());
-        }
-        catch (HttpRequestException ex)
-        {
-            return StatusCode(500, $"Error contacting database API: {ex.Message}");
-        }
     }
 
     [HttpGet]

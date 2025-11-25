@@ -87,6 +87,12 @@ public class LocationData
     public string Address { get; set; } = "";
 }
 
+public class TripIdRequest
+{
+    [JsonPropertyName("tripId")]
+    public int TripId { get; set; }
+}
+
 public class RouteInformation
 {
     [JsonPropertyName("distance")]
