@@ -15,9 +15,7 @@ A fleet management system that dispatches drivers, allowing users to request a r
 - [Overview](#overview)
 - [Features](#features)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
   - [Server Setup](#server-setup)
-- [Usage](#usage)
 - [REST API Routes](#rest-api-routes)
   - [Request a Ride](#request-a-ride)
   - [Complete a Ride](#complete-a-ride)
@@ -68,9 +66,6 @@ Project is deployed and the UI is accessible through:
 http://10.172.55.21:7500/swagger
 
 You can access our JSON structure for all the endpoints from the link above.
-
-## Usage
-...
 
 ## REST API Routes
 
