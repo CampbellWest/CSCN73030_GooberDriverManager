@@ -1,0 +1,386 @@
+\chapter{Gewber Driver Management }
+\hypertarget{md__r_e_a_d_m_e}{}\label{md__r_e_a_d_m_e}\index{Gewber Driver Management@{Gewber Driver Management}}
+\label{md__r_e_a_d_m_e_autotoc_md0}%
+\Hypertarget{md__r_e_a_d_m_e_autotoc_md0}%
+
+
+A fleet management system that dispatches drivers, allowing users to request a ride from one location to another.
+
+\href{https://github.com/CampbellWest/CSCN73030_GewberDriverManager}{\texttt{Click here for Git\+Hub}}\hypertarget{md__r_e_a_d_m_e_autotoc_md1}{}\doxysection{\texorpdfstring{Team Members}{Team Members}}\label{md__r_e_a_d_m_e_autotoc_md1}
+
+\begin{DoxyItemize}
+\item Cambell
+\item Jordan
+\item Navjeet
+\item Paul
+\item Shal
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md2}{}\doxysection{\texorpdfstring{Table of Contents}{Table of Contents}}\label{md__r_e_a_d_m_e_autotoc_md2}
+
+\begin{DoxyItemize}
+\item Overview
+\item Features
+\item Getting Started
+\begin{DoxyItemize}
+\item Server Setup
+\end{DoxyItemize}
+\item REST API Routes
+\begin{DoxyItemize}
+\item Request a Ride
+\item Complete a Ride
+\item Get Available Drivers
+\item Update Driver Availability
+\item Generate Test Drivers
+\item Clean Drivers
+\end{DoxyItemize}
+\item Docker
+\item Testing
+\begin{DoxyItemize}
+\item How to Run Tests
+\item Unit Tests
+\begin{DoxyItemize}
+\item Unit Test Coverage
+\item Unit Test Results
+\end{DoxyItemize}
+\item Integration Tests
+\begin{DoxyItemize}
+\item Integration Test Coverage
+\item Integration Test Results
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md3}{}\doxysection{\texorpdfstring{Overview}{Overview}}\label{md__r_e_a_d_m_e_autotoc_md3}
+This module handles all driver-\/related operations in the system, including driver registration, ride assignment, trip completion, and retrieval of ride details. It interacts with the Database team (Supabase backend) using REST API endpoints to store and retrieve driver and trip data. This module ensures smooth communication between the ride request system and the backend database, managing driver availability and assignments dynamically.
+
+Other modules can access our functions using our endpoints in our REST API Routes section.\hypertarget{md__r_e_a_d_m_e_autotoc_md4}{}\doxysection{\texorpdfstring{Features}{Features}}\label{md__r_e_a_d_m_e_autotoc_md4}
+• Generating and managing driver data in memory for simulation/testing. • Handling ride requests and assigning the most suitable driver. • Communicating with Supabase to log trip and driver details. • Updating driver status (available/busy) based on ride completion. • Fetching ride information from the Supabase database.\hypertarget{md__r_e_a_d_m_e_autotoc_md5}{}\doxysection{\texorpdfstring{Requirements}{Requirements}}\label{md__r_e_a_d_m_e_autotoc_md5}
+
+\begin{DoxyTable}{2}{}{}{1}
+\SetCell{bg=\tableheadbgcolor,font=\bfseries}Requirement  &\SetCell{bg=\tableheadbgcolor,font=\bfseries}Description  \\
+REQ-\/0001  &The system shall generate test drivers in batches of 10 until 100 total are registered.  \\
+REQ-\/0002  &The system shall filter and assign the closest available driver to each ride request.  \\
+REQ-\/0003  &The system shall send a trip entry to Supabase when a driver is assigned to a ride.  \\
+REQ-\/0004  &The system shall send a driver entry to Supabase when a ride is completed.  \\
+REQ-\/0005  &The system shall mark a driver as available again once a ride is completed.  \\
+REQ-\/0006  &The system shall fetch ride or vehicle information from Supabase for a given driver ID.  \\
+REQ-\/0007  &The system shall return a driver ID when a ride is requested.  \\
+REQ-\/0008  &The system shall return the driver latitude and longitude when a ride is requested.  \\
+REQ-\/0009  &The system shall generate tests drivers with random car make and model.  \\
+REQ-\/0010  &The system shall generate tests drivers with random passenger capacity.  \\
+REQ-\/0011  &The system shall generate tests drivers with random pet friendly vehicles as a boolean.  \\
+\end{DoxyTable}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md6}{}\doxysubsection{\texorpdfstring{Server Setup}{Server Setup}}\label{md__r_e_a_d_m_e_autotoc_md6}
+Project is deployed and the UI is accessible through\+: \href{http://10.172.55.21:7500/swagger}{\texttt{http\+://10.\+172.\+55.\+21\+:7500/swagger}}
+
+You can access our JSON structure for all the endpoints from the link above.\hypertarget{md__r_e_a_d_m_e_autotoc_md7}{}\doxysection{\texorpdfstring{REST API Routes}{REST API Routes}}\label{md__r_e_a_d_m_e_autotoc_md7}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md8}{}\doxysubsection{\texorpdfstring{Request a Ride}{Request a Ride}}\label{md__r_e_a_d_m_e_autotoc_md8}
+Creates a new ride request in the system.
+
+{\bfseries{Endpoint\+:}} ~\newline
+ {\ttfamily POST \href{http://10.172.55.21:7500/api/DriverManager/RequestDriver}{\texttt{http\+://10.\+172.\+55.\+21\+:7500/api/\+Driver\+Manager/\+Request\+Driver}}}
+
+{\bfseries{Attributes}}
+
+
+\begin{DoxyItemize}
+\item {\ttfamily ride\+\_\+id} (integer) — Unique identifier for the ride.
+\item {\ttfamily client\+Id} (integer) — Identifier for the client requesting the ride. ~\newline
+
+\item {\ttfamily timestamp} (ISO 8601 string) — Time when the ride request was created. ~\newline
+
+\item {\ttfamily pickup} (object) — Pickup location details. ~\newline
+
+\begin{DoxyItemize}
+\item {\ttfamily latitude} (float) ~\newline
+
+\item {\ttfamily longitude} (float) ~\newline
+
+\item {\ttfamily address} (string) ~\newline
+
+\end{DoxyItemize}
+\item {\ttfamily drop\+Off} (object) — Drop-\/off location details. ~\newline
+
+\begin{DoxyItemize}
+\item {\ttfamily latitude} (float) ~\newline
+
+\item {\ttfamily longitude} (float) ~\newline
+
+\item {\ttfamily address} (string) ~\newline
+
+\end{DoxyItemize}
+\item {\ttfamily ride\+Information} (object) — Ride preferences. ~\newline
+
+\begin{DoxyItemize}
+\item {\ttfamily car\+Type} (string) — Type of car requested. ~\newline
+
+\item {\ttfamily pet\+Friendly} (boolean) — Whether pets are allowed. ~\newline
+
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+{\bfseries{Input (JSON Body)}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ "{}ride\_id"{}:\ 30,}
+\DoxyCodeLine{\ \ "{}clientId"{}:\ 1,}
+\DoxyCodeLine{\ \ "{}timestamp"{}:\ "{}2025-\/09-\/18T16:45:00Z"{},}
+\DoxyCodeLine{\ \ "{}pickup"{}:\ \{}
+\DoxyCodeLine{\ \ \ \ "{}latitude"{}:\ 43.5448,}
+\DoxyCodeLine{\ \ \ \ "{}longitude"{}:\ -\/80.2482,}
+\DoxyCodeLine{\ \ \ \ "{}address"{}:\ "{}108\ University\ Ave\ E,\ Waterloo"{}}
+\DoxyCodeLine{\ \ \},}
+\DoxyCodeLine{\ \ "{}dropOff"{}:\ \{}
+\DoxyCodeLine{\ \ \ \ "{}latitude"{}:\ 43.4723,}
+\DoxyCodeLine{\ \ \ \ "{}longitude"{}:\ -\/80.5449,}
+\DoxyCodeLine{\ \ \ \ "{}address"{}:\ "{}220\ King\ St\ N,\ Waterloo"{}}
+\DoxyCodeLine{\ \ \},}
+\DoxyCodeLine{\ \ "{}routeInformation"{}:\ \{}
+\DoxyCodeLine{\ \ \ \ "{}distance\_km"{}:\ 23.4,}
+\DoxyCodeLine{\ \ \ \ "{}duration\_min"{}:\ 28}
+\DoxyCodeLine{\ \ \},}
+\DoxyCodeLine{\ \ "{}rideInformation"{}:\ \{}
+\DoxyCodeLine{\ \ \ \ "{}carType"{}:\ "{}XL"{},}
+\DoxyCodeLine{\ \ \ \ "{}petFriendly"{}:\ true}
+\DoxyCodeLine{\ \ \},}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+{\bfseries{Output (JSON Body)}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ "{}driverId"{}:\ 123,}
+\DoxyCodeLine{\ \ "{}driverName"{}:\ "{}John\ Doe"{},}
+\DoxyCodeLine{\ \ "{}rating"{}:\ 4.8,}
+\DoxyCodeLine{\ \ "{}isAvailable"{}:\ false,}
+\DoxyCodeLine{\ \ "{}carInfo"{}:\ \{}
+\DoxyCodeLine{\ \ \ \ "{}make"{}:\ "{}Toyota"{},}
+\DoxyCodeLine{\ \ \ \ "{}model"{}:\ "{}Camry"{},}
+\DoxyCodeLine{\ \ \ \ "{}color"{}:\ "{}Silver"{},}
+\DoxyCodeLine{\ \ \ \ "{}plateNumber"{}:\ "{}ABCD-\/123"{},}
+\DoxyCodeLine{\ \ \ \ "{}carType"{}:\ "{}XL"{},}
+\DoxyCodeLine{\ \ \ \ "{}isPetFriendly"{}:\ true}
+\DoxyCodeLine{\ \ \},}
+\DoxyCodeLine{\ \ "{}currentLocation"{}:\ \{}
+\DoxyCodeLine{\ \ \ \ "{}latitude"{}:\ 43.4735,}
+\DoxyCodeLine{\ \ \ \ "{}longitude"{}:\ -\/80.5390}
+\DoxyCodeLine{\ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md9}{}\doxysubsection{\texorpdfstring{Complete a Ride}{Complete a Ride}}\label{md__r_e_a_d_m_e_autotoc_md9}
+Marks a ride as completed and finalizes the trip. ~\newline
+ This endpoint provides details of the driver and vehicle once the ride has been successfully completed.
+
+{\bfseries{Endpoint\+:}} ~\newline
+ {\ttfamily POST \href{http://10.172.55.21:7500/api/DriverManager/DriverComplete}{\texttt{http\+://10.\+172.\+55.\+21\+:7500/api/\+Driver\+Manager/\+Driver\+Complete}}}
+
+{\bfseries{Attributes}}
+
+
+\begin{DoxyItemize}
+\item {\ttfamily ride\+Id} (integer) — Unique identifier for the ride. ~\newline
+
+\item {\ttfamily driver\+Id} (integer) — Identifier for the driver who completed the ride. ~\newline
+
+\item {\ttfamily current\+\_\+location} (object) — Final reported location for the ride. ~\newline
+
+\begin{DoxyItemize}
+\item {\ttfamily latitude} (float) — Latitude coordinate. ~\newline
+
+\item {\ttfamily longitude} (float) — Longitude coordinate. ~\newline
+
+\item {\ttfamily address} (string) — Street address of the final location. ~\newline
+
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+{\bfseries{Input (JSON Body)}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ "{}rideId"{}:\ 123,}
+\DoxyCodeLine{\ \ "{}driverId"{}:\ 123,}
+\DoxyCodeLine{\ \ "{}current\_location"{}:\ \{}
+\DoxyCodeLine{\ \ \ \ "{}latitude"{}:\ 60.123,}
+\DoxyCodeLine{\ \ \ \ "{}longitude"{}:\ -\/70.123,}
+\DoxyCodeLine{\ \ \ \ "{}address"{}:\ "{}108\ University\ Ave\ E,\ Waterloo"{}}
+\DoxyCodeLine{\ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+{\bfseries{Output Text}} {\ttfamily Drive With Ride Id\+: 123 Is Complete. Driver is Available Again.}\hypertarget{md__r_e_a_d_m_e_autotoc_md10}{}\doxysubsection{\texorpdfstring{Get Available Drivers}{Get Available Drivers}}\label{md__r_e_a_d_m_e_autotoc_md10}
+{\bfseries{Endpoint\+:}} ~\newline
+ {\ttfamily GET \href{http://10.172.55.21:7500/api/DriverManager/GetAvailableDrivers}{\texttt{http\+://10.\+172.\+55.\+21\+:7500/api/\+Driver\+Manager/\+Get\+Available\+Drivers}}}
+
+{\bfseries{Output (JSON Body)}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{[}
+\DoxyCodeLine{\ \ \{}
+\DoxyCodeLine{\ \ \ \ "{}driverId"{}:\ 1,}
+\DoxyCodeLine{\ \ \ \ "{}driverName"{}:\ "{}Lebron\ James"{},}
+\DoxyCodeLine{\ \ \ \ "{}isAvailable"{}:\ true,}
+\DoxyCodeLine{\ \ \ \ "{}carInfo"{}:\ \{\ "{}carType"{}:\ "{}Sedan"{},\ "{}isPetFriendly"{}:\ false\ \},}
+\DoxyCodeLine{\ \ \ \ "{}currentLocation"{}:\ \{\ "{}latitude"{}:\ 43.4723,\ "{}longitude"{}:\ -\/80.5449\ \}}
+\DoxyCodeLine{\ \ \},}
+\DoxyCodeLine{\ \ \{}
+\DoxyCodeLine{\ \ \ \ "{}driverId"{}:\ 2,}
+\DoxyCodeLine{\ \ \ \ "{}driverName"{}:\ "{}Ash\ Ketchum"{},}
+\DoxyCodeLine{\ \ \ \ "{}isAvailable"{}:\ true,}
+\DoxyCodeLine{\ \ \ \ "{}carInfo"{}:\ \{\ "{}carType"{}:\ "{}XL"{},\ "{}isPetFriendly"{}:\ true\ \},}
+\DoxyCodeLine{\ \ \ \ "{}currentLocation"{}:\ \{\ "{}latitude"{}:\ 43.4643,\ "{}longitude"{}:\ -\/80.5204\ \}}
+\DoxyCodeLine{\ \ \}}
+\DoxyCodeLine{]}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md11}{}\doxysubsection{\texorpdfstring{Update Driver Availability}{Update Driver Availability}}\label{md__r_e_a_d_m_e_autotoc_md11}
+{\bfseries{Endpoint\+:}} ~\newline
+ {\ttfamily PUT \href{http://10.172.55.21:7500/api/DriverManager/UpdateDriverAvailability}{\texttt{http\+://10.\+172.\+55.\+21\+:7500/api/\+Driver\+Manager/\+Update\+Driver\+Availability}}}
+
+{\bfseries{Variables}}
+\begin{DoxyItemize}
+\item {\ttfamily driver\+Id} (integer) — Identifier for the driver. ~\newline
+
+\item {\ttfamily is\+Available} (boolean) — Is driver available? ~\newline
+
+\end{DoxyItemize}
+
+{\bfseries{Input (JSON Body)}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ "{}driverId"{}:\ 30,}
+\DoxyCodeLine{\ \ "{}isAvailable"{}:\ false}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md12}{}\doxysubsection{\texorpdfstring{Get Ride Information}{Get Ride Information}}\label{md__r_e_a_d_m_e_autotoc_md12}
+{\bfseries{Endpoint\+:}} ~\newline
+ {\ttfamily GET \href{http://10.172.55.21:7500/api/GetRideInfo?driverId=123}{\texttt{http\+://10.\+172.\+55.\+21\+:7500/api/\+Get\+Ride\+Info?driver\+Id=123}}}
+
+{\bfseries{Query Parameters}}
+\begin{DoxyItemize}
+\item {\ttfamily driver\+Id} (integer) — Identifier for the driver must be provided in the URL.
+\end{DoxyItemize}
+
+{\bfseries{Output (JSON Body)}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ "{}driver\_id"{}:\ 123,}
+\DoxyCodeLine{\ \ "{}make"{}:\ "{}Toyota"{},}
+\DoxyCodeLine{\ \ "{}model"{}:\ "{}Supra"{},}
+\DoxyCodeLine{\ \ "{}year"{}:\ 2025,}
+\DoxyCodeLine{\ \ "{}color"{}:\ "{}Blue"{},}
+\DoxyCodeLine{\ \ "{}license\_plate"{}:\ "{}GWBR-\/999"{},}
+\DoxyCodeLine{\ \ "{}seat\_capacity"{}:\ 4,}
+\DoxyCodeLine{\ \ "{}is\_pet\_friendly"{}:\ false,}
+\DoxyCodeLine{\ \ "{}created\_at"{}:\ "{}2024-\/01-\/01T12:00:00Z"{}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md13}{}\doxysubsection{\texorpdfstring{Generate Test Drivers}{Generate Test Drivers}}\label{md__r_e_a_d_m_e_autotoc_md13}
+{\bfseries{Endpoint\+:}} ~\newline
+ {\ttfamily GET \href{http://10.172.55.21:7500/api/GenerateMoreDriversTest}{\texttt{http\+://10.\+172.\+55.\+21\+:7500/api/\+Generate\+More\+Drivers\+Test}}}
+
+{\bfseries{Output (JSON Body)}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{[}
+\DoxyCodeLine{\ \ \{}
+\DoxyCodeLine{\ \ \ \ "{}driverId"{}:\ 1,}
+\DoxyCodeLine{\ \ \ \ "{}driverName"{}:\ "{}Lebron\ James"{},}
+\DoxyCodeLine{\ \ \ \ "{}isAvailable"{}:\ true,}
+\DoxyCodeLine{\ \ \ \ "{}carInfo"{}:\ \{\ "{}carType"{}:\ "{}Sedan"{},\ "{}isPetFriendly"{}:\ false\ \},}
+\DoxyCodeLine{\ \ \ \ "{}currentLocation"{}:\ \{\ "{}latitude"{}:\ 43.4723,\ "{}longitude"{}:\ -\/80.5449\ \}}
+\DoxyCodeLine{\ \ \},}
+\DoxyCodeLine{\ \ \{}
+\DoxyCodeLine{\ \ \ \ "{}driverId"{}:\ 2,}
+\DoxyCodeLine{\ \ \ \ "{}driverName"{}:\ "{}Ash\ Ketchum"{},}
+\DoxyCodeLine{\ \ \ \ "{}isAvailable"{}:\ true,}
+\DoxyCodeLine{\ \ \ \ "{}carInfo"{}:\ \{\ "{}carType"{}:\ "{}XL"{},\ "{}isPetFriendly"{}:\ true\ \},}
+\DoxyCodeLine{\ \ \ \ "{}currentLocation"{}:\ \{\ "{}latitude"{}:\ 43.4643,\ "{}longitude"{}:\ -\/80.5204\ \}}
+\DoxyCodeLine{\ \ \}}
+\DoxyCodeLine{]}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md14}{}\doxysubsection{\texorpdfstring{Clean Drivers}{Clean Drivers}}\label{md__r_e_a_d_m_e_autotoc_md14}
+{\bfseries{Endpoint\+:}} ~\newline
+ {\ttfamily GET \href{http://10.172.55.21:7500/api/ClearDriversTEST}{\texttt{http\+://10.\+172.\+55.\+21\+:7500/api/\+Clear\+Drivers\+TEST}}}
+
+{\bfseries{Output}} {\ttfamily 200 OK}\hypertarget{md__r_e_a_d_m_e_autotoc_md15}{}\doxysection{\texorpdfstring{Docker}{Docker}}\label{md__r_e_a_d_m_e_autotoc_md15}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md16}{}\doxysubsection{\texorpdfstring{Build docker image with docker \mbox{[}username\mbox{]}/\mbox{[}image name\mbox{]}}{Build docker image with docker \mbox{[}username\mbox{]}/\mbox{[}image name\mbox{]}}}\label{md__r_e_a_d_m_e_autotoc_md16}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{build\ -\/t\ <username>/drivermanagement\ .}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md17}{}\doxysubsection{\texorpdfstring{Push docker image to account \mbox{[}username\mbox{]}/\mbox{[}image name\mbox{]}}{Push docker image to account \mbox{[}username\mbox{]}/\mbox{[}image name\mbox{]}}}\label{md__r_e_a_d_m_e_autotoc_md17}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{push\ <username>/drivermanagement}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md18}{}\doxysubsection{\texorpdfstring{Compose docker locally}{Compose docker locally}}\label{md__r_e_a_d_m_e_autotoc_md18}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{compose\ up\ -\/-\/build}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md19}{}\doxysection{\texorpdfstring{Testing}{Testing}}\label{md__r_e_a_d_m_e_autotoc_md19}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md20}{}\doxysubsection{\texorpdfstring{How to Run Tests}{How to Run Tests}}\label{md__r_e_a_d_m_e_autotoc_md20}
+To execute the unit tests, run the following command in the root directory\+:\hypertarget{md__r_e_a_d_m_e_autotoc_md21}{}\doxysubsection{\texorpdfstring{Unit Tests}{Unit Tests}}\label{md__r_e_a_d_m_e_autotoc_md21}
+We used the {\bfseries{x\+Unit}} test suite for all unit tests.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{dotnet\ test}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md22}{}\doxysubsubsection{\texorpdfstring{Unit Test Coverage}{Unit Test Coverage}}\label{md__r_e_a_d_m_e_autotoc_md22}
+The unit tests are located in the {\ttfamily Goober\+Driver\+Tests} directory and cover the following\+:
+
+
+\begin{DoxyTable}{3}{}{}{1}
+\SetCell{bg=\tableheadbgcolor,font=\bfseries}Component  &\SetCell{bg=\tableheadbgcolor,font=\bfseries}Functionality Tested  &\SetCell{bg=\tableheadbgcolor,font=\bfseries}Test Cases  \\
+{\bfseries{Distance Calculation}}  &Verifies formula logic used to calculate the distance between two latitude and longitude coordinates.  &• Same Location (0 distance)~\newline
+• Local Distances (Kitchener-\/\+Waterloo locations)~\newline
+  \\
+{\bfseries{Math Helpers}}  &Verifies the helper functions used for radian conversion.  &• Degree to Radian conversions (0°, 90°, 180°, -\/45°)  \\
+{\bfseries{Driver Filtering}}  &Ensures drivers are correctly filtered out based on the user\textquotesingle{}s request criteria.  &• Matching Car Type (Regular vs XL)~\newline
+• Pet Friendly boolean requirements~\newline
+• Empty driver lists~\newline
+• Multiple valid matches  \\
+{\bfseries{Driver Selection}}  &Ensures the system picks the mathematically closest driver to the pickup point.  &• Single driver availability~\newline
+• Multiple drivers (choosing shortest distance)~\newline
+• Exception handling (No drivers available)~\newline
+• Exact location matches  \\
+\end{DoxyTable}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md23}{}\doxysubsubsection{\texorpdfstring{Unit Test Results}{Unit Test Results}}\label{md__r_e_a_d_m_e_autotoc_md23}
+ \hypertarget{md__r_e_a_d_m_e_autotoc_md24}{}\doxysubsection{\texorpdfstring{Integration Tests}{Integration Tests}}\label{md__r_e_a_d_m_e_autotoc_md24}
+The integration tests are located in {\ttfamily Goober\+Driver\+Integration\+Tests} directory and cover the following\+:\hypertarget{md__r_e_a_d_m_e_autotoc_md25}{}\doxysubsubsection{\texorpdfstring{Integration Test Coverage}{Integration Test Coverage}}\label{md__r_e_a_d_m_e_autotoc_md25}
+
+\begin{DoxyTable}{3}{}{}{1}
+\SetCell{bg=\tableheadbgcolor,font=\bfseries}Component  &\SetCell{bg=\tableheadbgcolor,font=\bfseries}Constraint Verified  &\SetCell{bg=\tableheadbgcolor,font=\bfseries}Test Cases  \\
+{\bfseries{Driver Registration}}  &Verifies data integrity and schema constraints when adding new drivers to Supabase.  &• {\bfseries{Success\+:}} Valid inputs \& Special characters (UTF-\/8)~\newline
+• {\bfseries{Success\+:}} Adds driver with valid data (Add\+Driver\+\_\+\+Should\+Create\+Driver)~\newline
+• {\bfseries{Constraint\+:}} Ensures license number uniqueness~\newline
+• {\bfseries{Sanity\+:}} Rejects negative license numbers  \\
+{\bfseries{Trip Logging}}  &Verifies constraints when logging trip history.  &• {\bfseries{Success\+:}} Creates trip with valid driver~\newline
+• {\bfseries{Failure\+:}} Trip rejected if driver does not exist (Add\+Trip\+\_\+\+Should\+Fail\+\_\+\+When\+Driver\+Does\+Not\+Exist)~\newline
+• {\bfseries{Failure\+:}} Prevents same trip being assigned to multiple drivers (Add\+Trip\+\_\+\+Should\+Fail\+\_\+\+When\+Same\+Trip\+Assigned\+To\+Multiple\+Drivers)~\newline
+• {\bfseries{Logic\+:}} Updates trip status (Trip\+Status\+\_\+\+Should\+Update\+To\+Completed),(Trip\+Status\+\_\+\+Should\+Update\+From\+Completed\+To\+Booked),(Trip\+Status\+\_\+\+Should\+Update\+From\+Booked\+To\+In\+Progress)  \\
+\end{DoxyTable}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md26}{}\doxysubsubsection{\texorpdfstring{Integration Test Results}{Integration Test Results}}\label{md__r_e_a_d_m_e_autotoc_md26}
+ 
