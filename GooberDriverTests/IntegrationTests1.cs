@@ -139,7 +139,8 @@ namespace DemoApi.GooberDriverTests
 
     public class IntegrationTests
     {
-    private const string SupabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZscGptY2VxeWthbGZ3a3R5c2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMDEwMTMsImV4cCI6MjA3NDY3NzAxM30.X1rlQZeSvbrO0KE1LZdsrLvNS8YlpTborYoXG4JGsWI";
+
+    private const string SupabaseApiKey= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZscGptY2VxeWthbGZ3a3R5c2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMDEwMTMsImV4cCI6MjA3NDY3NzAxM30.X1rlQZeSvbrO0KE1LZdsrLvNS8YlpTborYoXG4JGsWI";
     private const string DriverEndpoint = "https://flpjmceqykalfwktysgi.supabase.co/rest/v1/Driver";
     private const string TripEndpoint = "https://flpjmceqykalfwktysgi.supabase.co/rest/v1/Trip";
 
@@ -237,7 +238,7 @@ namespace DemoApi.GooberDriverTests
                 //Console.WriteLine("Supabase Driver Error: " + error); 
             }
 
-            Assert.True(response.IsSuccessStatusCode, "Driver was NOT created in Supabase");
+            Assert.True(response.IsSuccessStatusCode, "Driver was not created in Supabase");
 
             // VERIFY: fetch the driver by license_number
                 var driverData = await GetDriverAsync(licenseNumber);
@@ -250,6 +251,7 @@ namespace DemoApi.GooberDriverTests
                 await DeleteDriverAsync(driverId); // cleanup
             }
         }
+
 
         [Fact]
         public async Task AddDriver_ShouldSucceed_WithSpecialCharactersInLocation()
@@ -277,11 +279,11 @@ namespace DemoApi.GooberDriverTests
                     Console.WriteLine("Supabase Driver Error: " + error);
                 }
 
-                Assert.True(response.IsSuccessStatusCode, "Driver with special characters should be created");
+                Assert.True(response.IsSuccessStatusCode, "Driver with special characters in Location should be created");
 
                 // Verify content
                 var driverData = await GetDriverAsync(licenseNumber);
-                Assert.Contains("Québec City", driverData);
+                Assert.Contains("Québec City@", driverData);
             }
             finally
             {
@@ -289,11 +291,12 @@ namespace DemoApi.GooberDriverTests
             }
         }
 
+
         [Fact]
         public async Task UpdateTripDriverId_ShouldUpdateSuccessfully()
         {
-            int tripId = 2; // existing trip already in DB
-            int newDriverId = 3;
+            int tripId = 3; // existing trip already in DB
+            int newDriverId = 5;
 
             var updatePayload = new { driver_id = newDriverId };
 
@@ -307,6 +310,24 @@ namespace DemoApi.GooberDriverTests
             var tripData = await GetTripAsync(tripId);
             Assert.Contains(newDriverId.ToString(), tripData);
 
+        }
+
+        [Fact]
+        public async Task UpdateTripDriverId_ShouldFailWhenTripAlreadyAssigned(){
+            int tripId=2;
+            int newDriverId=4;
+
+            var updatePayload = new {driver_id=newDriverId};
+
+            var response = await _client.PatchAsync(
+                $"{TripEndpoint}?id=eq.{tripId}",
+                JsonContent(updatePayload)
+            );
+
+            Assert.True(response.IsSuccessStatusCode, "DriverId update failed for already assigned Trip");
+
+            var tripData= await GetTripAsync(tripId);
+            Assert.Contains(newDriverId.ToString(), tripData);
         }
 
        [Fact]
@@ -328,7 +349,6 @@ namespace DemoApi.GooberDriverTests
 
             // If trip does not exist, the returned array will be empty: "[]"
             Assert.Equal("[]", verifyContent.Trim().ToString());
-
 
             // Ensure the update did NOT crash or silently succeed on a nonexistent trip.
             Assert.True(response.IsSuccessStatusCode, 

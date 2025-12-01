@@ -645,4 +645,96 @@ public class DriverFinderIntegrationTests
 
         Assert.Equal("No drivers available", exception.Message);
     }
+
+    // public class AddDriverTests
+    // {
+
+    //      private static readonly Random random = new();
+        
+    //     // ---- Test for AddDriverDetails ----
+    //         [Fact]
+    //         public async Task AddDriver_ShouldSucceed_WithValidInput()
+    //         {
+    //             // Arrange
+    //             int id = random.Next(1000, 9999); // unique test id
+    //             string accountId = "142dc6ca-7d33-47ea-9b1d-53ac25c9b15f";
+    //             int rating = 5;
+    //             string availability = "available"; 
+    //             int licenseNumber = 99999;
+    //             string currentLocation = "Test Location";
+
+    //             // Act
+    //             var exception = await Record.ExceptionAsync(() =>
+    //                 AddDriverDetails.AddDriverAsync(id, accountId, rating, availability, licenseNumber, currentLocation)
+    //             );
+
+    //             // Assert
+    //             Assert.Null(exception); // test passes if no exception
+    //         }
+
+    //         [Fact]
+    //         public async Task AddDriver_ShouldFail_WithInvalidAvailability()
+    //         {
+    //             // Arrange
+    //             int driverId = random.Next(1000, 9999);
+    //             string accountId = Guid.NewGuid().ToString();
+    //             int rating = 5;
+    //             string invalidAvailability = "busy"; // Not valid enum
+    //             int licenseNumber = 123456;
+    //             string currentLocation = "123 King St, Waterloo";
+
+    //             // Act
+    //             var ex = await Assert.ThrowsAsync<Exception>(() =>
+    //                 AddDriverDetails.AddDriverAsync(driverId, accountId, rating, invalidAvailability, licenseNumber, currentLocation)
+    //             );
+
+    //             // Assert
+    //             Assert.Contains("invalid input value for enum availability_status", ex.Message);
+
+    //         }
+
+    //         [Fact]
+    //         public async Task AddDriver_ShouldFail_WhenAvailabilityIsNull()
+    //         {
+    //             // Arrange
+    //             int id = new Random().Next(1000, 9999);
+    //             string accountId = Guid.NewGuid().ToString();
+    //             int rating = 4;
+    //             string? availability = null; // missing value
+    //             int licenseNumber = 12345;
+    //             string currentLocation = "Unknown";
+
+    //             // Act
+    //             var ex = await Assert.ThrowsAsync<Exception>(() =>
+    //                 AddDriverDetails.AddDriverAsync(id, accountId, rating, availability!, licenseNumber, currentLocation)
+    //             );
+
+    //             // Assert
+    //             Assert.Contains("Failed to add driver", ex.Message);
+    //         }
+
+
+    //         [Fact]
+    //         public async Task AddDriver_ShouldFail_WithInvalidRating()
+    //         {
+    //             // Arrange
+    //             int id = new Random().Next(1000, 9999);
+    //             string accountId = Guid.NewGuid().ToString();
+    //             int rating = 10; // out of range 
+    //             string availability = "available";
+    //             int licenseNumber = 56789;
+    //             string currentLocation = "Test City";
+
+    //             // Act
+    //             var ex = await Assert.ThrowsAsync<Exception>(() =>
+    //                 AddDriverDetails.AddDriverAsync(id, accountId, rating, availability, licenseNumber, currentLocation)
+    //             );
+
+    //             // Assert
+    //            Assert.Contains("Failed to add driver", ex.Message);
+
+    //         }    
+
+         
+    // }
 }
