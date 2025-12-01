@@ -1,12 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using System.Text.Json;
 using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 using DemoApi;
 using DemoApi.Resources;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -16,47 +17,39 @@ using DotNetEnv;
 
 namespace DemoApi.GooberDriverTests
 {
-   
+    // Integration tests against the DemoApi itself
     public class DriverManagerControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     {
         private readonly HttpClient _client;
 
         public DriverManagerControllerIntegrationTests(WebApplicationFactory<Program> factory)
         {
-            // Create an in-memory HttpClient for the DemoApi application
             _client = factory.CreateClient();
         }
 
         [Fact]
         public async Task GetAvailableDrivers_NoDrivers_ReturnsNotFound()
         {
-            // Arrange
             var clearResponse = await _client.GetAsync("/api/DriverManager/ClearDriversTEST?password=123");
             clearResponse.EnsureSuccessStatusCode();
 
-            // Act
             var response = await _client.GetAsync("/api/DriverManager/GetAvailableDrivers");
 
-            // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             var message = await response.Content.ReadAsStringAsync();
             Assert.Contains("No available drivers at the moment.", message);
         }
 
-       
         [Fact]
         public async Task GetAvailableDrivers_WhenDriversExist_ReturnsOkWithAvailableDrivers()
         {
-            // Arrange: clears and then generates new drivers
             await _client.GetAsync("/api/DriverManager/ClearDriversTEST?password=123");
 
             var generateResponse = await _client.GetAsync("/api/DriverManager/GenerateMoreDriversTest");
             generateResponse.EnsureSuccessStatusCode();
 
-            // Act: calls the real endpoint
             var response = await _client.GetAsync("/api/DriverManager/GetAvailableDrivers");
 
-            // Assert
             response.EnsureSuccessStatusCode();
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -64,79 +57,37 @@ namespace DemoApi.GooberDriverTests
 
             Assert.NotNull(drivers);
             Assert.NotEmpty(drivers!);
-            // all drivers returned should be available
             Assert.All(drivers!, d => Assert.True(d.IsAvailable));
         }
-
 
         [Fact]
         public async Task UpdateDriverAvailability_UnknownDriver_ReturnsNotFound()
         {
-            // Arrange
             await _client.GetAsync("/api/DriverManager/ClearDriversTEST?password=123");
 
             int bogusDriverId = 999_999;
 
-            // Act
             var response = await _client.PutAsync(
                 $"/api/DriverManager/UpdateDriverAvailability?driverId={bogusDriverId}&isAvailable=false",
                 content: null);
 
-            // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             var body = await response.Content.ReadAsStringAsync();
             Assert.Contains($"Driver with ID {bogusDriverId} not found.", body);
         }
 
-
-        /*
         [Fact]
-        
-        public async Task UpdateDriverAvailability_ExistingDriver_MakesDriverUnavailable()
+        public async Task RequestDriver_UnknownTrip_ReturnsNotFound()
         {
-            // Arrange
-            await _client.GetAsync("/api/DriverManager/ClearDriversTEST?password=123");
-            var generateResponse = await _client.GetAsync("/api/DriverManager/GenerateMoreDriversTest");
-            generateResponse.EnsureSuccessStatusCode();
+            var payload = new TripIdRequest { TripId = 99999999 }; // Non-existent trip ID
 
-            // Gets list of available drivers first
-            var initialResponse = await _client.GetAsync("/api/DriverManager/GetAvailableDrivers");
-            initialResponse.EnsureSuccessStatusCode();
+            var response = await _client.PostAsJsonAsync("/api/DriverManager/RequestDriver", payload);
 
-            var initialDrivers = await initialResponse.Content.ReadFromJsonAsync<List<ConfirmDriverRequest>>();
-            Assert.NotNull(initialDrivers);
-            Assert.NotEmpty(initialDrivers!);
-
-            var target = initialDrivers!.First();
-            int driverId = target.DriverId;
-
-            // Act
-            var updateResponse = await _client.PutAsync(
-                $"/api/DriverManager/UpdateDriverAvailability?driverId={driverId}&isAvailable=false",
-                content: null);
-            updateResponse.EnsureSuccessStatusCode();
-
-            // Assert
-            var afterResponse = await _client.GetAsync("/api/DriverManager/GetAvailableDrivers");
-            if (afterResponse.StatusCode == HttpStatusCode.NotFound)
-            {
-                var msg = await afterResponse.Content.ReadAsStringAsync();
-                Assert.Contains("No available drivers", msg);
-            }
-            else
-            {
-                afterResponse.EnsureSuccessStatusCode();
-                var afterDrivers = await afterResponse.Content.ReadFromJsonAsync<List<ConfirmDriverRequest>>();
-                Assert.NotNull(afterDrivers);
-                Assert.DoesNotContain(afterDrivers!, d => d.DriverId == driverId);
-                Assert.All(afterDrivers!, d => Assert.True(d.IsAvailable));
-            }
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
-    */
-
-        //Ride info integration tests would go here
     }
 
+    // Integration tests directly against Supabase
     public class IntegrationTests
     {
 
@@ -148,19 +99,14 @@ namespace DemoApi.GooberDriverTests
 
     private readonly HttpClient _client;
 
-    public IntegrationTests()
-    {
-        // Load .env when this class is instantiated
-        //DotNetEnv.Env.Load();
-
-        //SupabaseApiKey = Config.SupabaseApiKey;
-
-        _client = new HttpClient();
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SupabaseApiKey);
-        _client.DefaultRequestHeaders.Add("apikey", SupabaseApiKey);
-        _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        _client.DefaultRequestHeaders.Add("Prefer", "return=representation");
-    }
+        public IntegrationTests()
+        {
+            _client = new HttpClient();
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SupabaseApiKey);
+            _client.DefaultRequestHeaders.Add("apikey", SupabaseApiKey);
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Add("Prefer", "return=representation");
+        }
 
         private StringContent JsonContent(object obj)
         {
@@ -174,13 +120,7 @@ namespace DemoApi.GooberDriverTests
             request.Headers.Add("apikey", SupabaseApiKey);
             request.Headers.Add("Authorization", $"Bearer {SupabaseApiKey}");
 
-            var response = await _client.SendAsync(request);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                string errorMsg = await response.Content.ReadAsStringAsync();
-                //Console.WriteLine($"Failed to delete driver: {errorMsg}");
-            }
+            _ = await _client.SendAsync(request);
         }
 
         private async Task DeleteTripAsync(int id)
@@ -189,16 +129,10 @@ namespace DemoApi.GooberDriverTests
             request.Headers.Add("apikey", SupabaseApiKey);
             request.Headers.Add("Authorization", $"Bearer {SupabaseApiKey}");
 
-            var response = await _client.SendAsync(request);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                string errorMsg = await response.Content.ReadAsStringAsync();
-                //Console.WriteLine($"Failed to delete trip: {errorMsg}");
-            }
+            _ = await _client.SendAsync(request);
         }
 
-         private async Task<string> GetDriverAsync(int licenseNumber)
+        private async Task<string> GetDriverAsync(int licenseNumber)
         {
             var response = await _client.GetAsync($"{DriverEndpoint}?license_number=eq.{licenseNumber}");
             response.EnsureSuccessStatusCode();
@@ -212,43 +146,41 @@ namespace DemoApi.GooberDriverTests
             return await response.Content.ReadAsStringAsync();
         }
 
-
         [Fact]
         public async Task AddDriver_ShouldCreateDriver()
         {
             int driverId = new Random().Next(10000, 99999);
             int licenseNumber = new Random().Next(100000, 999999);
-            try{
-            var payload = new
-            {
-                id = driverId,
-                account_id = "142dc6ca-7d33-47ea-9b1d-53ac25c9b15f",
-                rating = 5,
-                availability_status = "available",
-                license_number = licenseNumber,
-                current_location = "Testlocation"
-            };
 
-            var response = await _client.PostAsync(DriverEndpoint, JsonContent(payload));
-
-            
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                var error = await response.Content.ReadAsStringAsync();
-                //Console.WriteLine("Supabase Driver Error: " + error); 
-            }
+                var payload = new
+                {
+                    id = driverId,
+                    account_id = "142dc6ca-7d33-47ea-9b1d-53ac25c9b15f",
+                    rating = 5,
+                    availability_status = "available",
+                    license_number = licenseNumber,
+                    current_location = "Testlocation"
+                };
+
+                var response = await _client.PostAsync(DriverEndpoint, JsonContent(payload));
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("Supabase Driver Error: " + error);
+                }
 
             Assert.True(response.IsSuccessStatusCode, "Driver was not created in Supabase");
 
-            // VERIFY: fetch the driver by license_number
                 var driverData = await GetDriverAsync(licenseNumber);
-                //Console.WriteLine("Driver Data: " + driverData);
                 Assert.Contains("Testlocation", driverData);
                 Assert.Contains(licenseNumber.ToString(), driverData);
             }
-             finally
+            finally
             {
-                await DeleteDriverAsync(driverId); // cleanup
+                await DeleteDriverAsync(driverId);
             }
         }
 
@@ -281,7 +213,6 @@ namespace DemoApi.GooberDriverTests
 
                 Assert.True(response.IsSuccessStatusCode, "Driver with special characters in Location should be created");
 
-                // Verify content
                 var driverData = await GetDriverAsync(licenseNumber);
                 Assert.Contains("Québec City@", driverData);
             }
@@ -333,8 +264,8 @@ namespace DemoApi.GooberDriverTests
        [Fact]
         public async Task UpdateDriverId_ShouldFail_WhenTripDoesNotExist()
         {
-            int invalidTripId = 999999;  
-            int newDriverId = new Random().Next(10000, 99999);   
+            int invalidTripId = 999999;
+            int newDriverId = new Random().Next(10000, 99999);
 
             var updatePayload = new { driver_id = newDriverId };
 
@@ -343,19 +274,14 @@ namespace DemoApi.GooberDriverTests
                 JsonContent(updatePayload)
             );
 
-            // Re-fetch the trip to confirm it does NOT exist
             var verifyResponse = await _client.GetAsync($"{TripEndpoint}?id=eq.{invalidTripId}");
             var verifyContent = await verifyResponse.Content.ReadAsStringAsync();
 
             // If trip does not exist, the returned array will be empty: "[]"
             Assert.Equal("[]", verifyContent.Trim().ToString());
 
-            // Ensure the update did NOT crash or silently succeed on a nonexistent trip.
-            Assert.True(response.IsSuccessStatusCode, 
-                "PATCH should return a valid HTTP status even if no rows exist, but update must not actually modify anything.");
-
+            Assert.True(response.IsSuccessStatusCode,
+                "PATCH should return a valid HTTP status even if no rows exist.");
         }
-
-
     }
 }
