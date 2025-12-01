@@ -63,12 +63,6 @@ Other modules can access our functions using our endpoints in our [REST API Rout
 | REQ-0010 | The system shall generate tests drivers with random passenger capacity. |
 | REQ-0011 | The system shall generate tests drivers with random pet friendly vehicles as a boolean. |
 
-## Getting Started
-...
-
-### Prerequisites
-...
-
 ### Server Setup
 Project is deployed and the UI is accessible through: 
 http://10.172.55.21:7500/swagger
