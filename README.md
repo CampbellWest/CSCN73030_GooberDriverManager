@@ -15,9 +15,7 @@ A fleet management system that dispatches drivers, allowing users to request a r
 - [Overview](#overview)
 - [Features](#features)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
   - [Server Setup](#server-setup)
-- [Usage](#usage)
 - [REST API Routes](#rest-api-routes)
   - [Request a Ride](#request-a-ride)
   - [Complete a Ride](#complete-a-ride)
@@ -63,20 +61,11 @@ Other modules can access our functions using our endpoints in our [REST API Rout
 | REQ-0010 | The system shall generate tests drivers with random passenger capacity. |
 | REQ-0011 | The system shall generate tests drivers with random pet friendly vehicles as a boolean. |
 
-## Getting Started
-...
-
-### Prerequisites
-...
-
 ### Server Setup
 Project is deployed and the UI is accessible through: 
 http://10.172.55.21:7500/swagger
 
 You can access our JSON structure for all the endpoints from the link above.
-
-## Usage
-...
 
 ## REST API Routes
 
@@ -109,27 +98,7 @@ Creates a new ride request in the system.
 
 ```json
 {
-  "ride_id": 30,
-  "clientId": 1,
-  "timestamp": "2025-09-18T16:45:00Z",
-  "pickup": {
-    "latitude": 43.5448,
-    "longitude": -80.2482,
-    "address": "108 University Ave E, Waterloo"
-  },
-  "dropOff": {
-    "latitude": 43.4723,
-    "longitude": -80.5449,
-    "address": "220 King St N, Waterloo"
-  },
-  "routeInformation": {
-    "distance_km": 23.4,
-    "duration_min": 28
-  },
-  "rideInformation": {
-    "carType": "XL",
-    "petFriendly": true
-  },
+  "tripId": 1
 }
 ```
 
