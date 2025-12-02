@@ -98,27 +98,7 @@ Creates a new ride request in the system.
 
 ```json
 {
-  "ride_id": 30,
-  "clientId": 1,
-  "timestamp": "2025-09-18T16:45:00Z",
-  "pickup": {
-    "latitude": 43.5448,
-    "longitude": -80.2482,
-    "address": "108 University Ave E, Waterloo"
-  },
-  "dropOff": {
-    "latitude": 43.4723,
-    "longitude": -80.5449,
-    "address": "220 King St N, Waterloo"
-  },
-  "routeInformation": {
-    "distance_km": 23.4,
-    "duration_min": 28
-  },
-  "rideInformation": {
-    "carType": "XL",
-    "petFriendly": true
-  },
+  "tripId": 1
 }
 ```
 
