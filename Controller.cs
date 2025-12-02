@@ -131,7 +131,6 @@ public class DriverManagerController : ControllerBase
         return rideRequest;
     }
 
-
     // POST api/DriverManager/RequestDriver
     [HttpPost]
     public async Task<IActionResult> RequestDriver(TripIdRequest tripRequest)
@@ -145,28 +144,27 @@ public class DriverManagerController : ControllerBase
         {
             rideRequest = await BuildRideRequestFromTripAsync(tripRequest.TripId);
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
         {
-            // responds with a non-success status code
             return StatusCode(500, ex.Message);
-        }
-        catch (HttpRequestException ex)
-        {
-            // error contacting Supabase
-            return StatusCode(500, $"Error contacting database API: {ex.Message}");
         }
 
         if (rideRequest == null)
-        {
             return NotFound($"Trip with ID {tripRequest.TripId} not found.");
-        }
 
         try
         {
+            // Generate drivers
             GenerateDriversByTenUpToOneHundred();
+            // Console.WriteLine("Registered drivers:");
+            // foreach (var d in RegisteredDrivers)
+            // {
+            //     Console.WriteLine($"Driver {d.DriverId}");
+            // }
 
             ConfirmDriverRequest? bestDriver = null;
 
+            // Find the closest available driver
             while (true)
             {
                 var filteredDrivers = DriverFinder.DriverFinder.FilterDrivers(rideRequest, RegisteredDrivers);
@@ -183,19 +181,45 @@ public class DriverManagerController : ControllerBase
                 }
             }
 
-            // UPDATE driver_id of the existing trip
+            // Add driver to database
+            await AddDriverDetails.AddDriverAsync(
+                id: bestDriver.DriverId,
+                accountId: "142dc6ca-7d33-47ea-9b1d-53ac25c9b15f", // existing accountId
+                rating: 5,
+                availability: "available",
+                licenseNumber: new Random().Next(10000, 99999),
+                currentLocation: rideRequest.PickupLocation.Address
+            );
+
+            // Update trip with driverId
             await UpdateDriverIdForTrip.UpdateDriverIdAsync(
                 tripId: rideRequest.RideId,
                 driverId: bestDriver.DriverId
             );
 
-            return Ok(bestDriver);
+            // Update driver object to reflect assigned ride
+            bestDriver.RideId = rideRequest.RideId;
+            bestDriver.DriverAssigned = true;
+            bestDriver.CurrentLocation = rideRequest.PickupLocation;
+
+            // Return combined response
+            var response = new
+            {
+                rideId = rideRequest.RideId,
+                driverAssigned = true,
+                driver = bestDriver
+            };
+
+            return Ok(response);
         }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
     }
+
+
+
 
 
     // POST api/DriverManager/DriveComplete

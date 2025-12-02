@@ -8,8 +8,10 @@ namespace DriverManagement
 {
     public class UpdateDriverIdForTrip
     {
-        private static readonly string tripEndpoint = Config.TripEndpoint;
-        private static readonly string apiKey = Config.SupabaseApiKey;
+        //private static readonly string tripEndpoint = Config.TripEndpoint;
+        //private static readonly string apiKey = Config.SupabaseApiKey;
+        private const string apiKey= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZscGptY2VxeWthbGZ3a3R5c2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMDEwMTMsImV4cCI6MjA3NDY3NzAxM30.X1rlQZeSvbrO0KE1LZdsrLvNS8YlpTborYoXG4JGsWI";
+        private const string tripEndpoint = "https://flpjmceqykalfwktysgi.supabase.co/rest/v1/Trip";
 
         private static HttpClient CreateClient()
         {
